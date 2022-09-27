@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+<div align="center">
+<h1>信息填写第一步</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+<br/><br/>
+* 项目名称<input name="projectName">
+<br/><br/>
+* 项目编号<input name="projectNumber">
+<br/><br/>
+* 采购人名称<input name="bossName">
+<br/><br/>
+* 总报价<input name="pay">
+<br/><br/>
+* 大写报价<input name="wordPay">
+<br/><br/>
+* 服务器/工期<input name="time">
+        <input type="submit" value="提交">
+        </form>
+    </div>
 </body>
 </html>
