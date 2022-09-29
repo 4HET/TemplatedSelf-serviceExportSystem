@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('second/', views.second),
-    path('sendPostSecond/', views.sendPostSecond)
+    path('sendPostSecond/', views.sendPostSecond),
+    path('upload_detail/', views.upload_detail)
 ]
