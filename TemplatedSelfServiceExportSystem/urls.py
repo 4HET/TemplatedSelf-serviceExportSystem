@@ -23,5 +23,6 @@ urlpatterns = [
     path('login/', views.login),
     path('', include("First.urls")),
     path('', include("Second.urls")),
-    path('', include("Third.urls"))
+    path('', include("Third.urls")),
+    path('', include("Register.urls"))
 ]

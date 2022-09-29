@@ -16,16 +16,16 @@
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 上传明细报价表
-        <form method="post" action="" enctype="multipart/form-data">
+{#        <form method="post" action="" enctype="multipart/form-data">#}
         {% csrf_token %}
         {{ form.file }}
        <input type="submit" value="上传"/>
-    </form>
+{#    </form>#}
     下载明细表模板
 </br></br>
-技术偏离表<input type="button" value="上传">下载技术偏离表模板
+技术偏离表{{ form.file }}<input type="button" value="上传">下载技术偏离表模板
 </br></br>
-项目实施方案<input type="button" value="上传">下载项目实施方案模板
+项目实施方案{{ form.file }}<input type="button" value="上传">下载项目实施方案模板
 </br></br>
 <input type="submit" style="background-color: #4472c4" value="下一步">
 </form>

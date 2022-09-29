@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+    <h1>
+        <p style="text-align:center">新用户注册</p>
+    </h1>
+    <center>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p style="text-align:center">用户名：<input type="text" name="username" /></p>
+        <p style="text-align:center">密码：<input type="password" name="password"/> </p>
+        <p style="text-align:center">供应商名称：<input type="text" name="SupplierName" /></p>
+        <p style="text-align:center">联系电话：<input type="text" name="phone"/> </p>
+        <p style="text-align:center">联系地址：<input type="text" name="address"/></p>
+        <p style="text-align:center">电子邮箱：<input type="text" name="email"/></p>
+        <p style="text-align:center">供应商开户行：<input type="text" name="SupplierDepositBank"/></p>
+        <p style="text-align:center">供应商对公账号：<input type="text" name="SupplierCorporateAccountNumber"/></p>
+        <p style="text-align:center">企业从业人数：<input type="text" name="NumberOfEmployees"/></p>
+        <p style="text-align:center">每年营业收入：<input type="text" name="AnnualOperatingIncome"/></p>
+        <p style="text-align:center">资产总额：<input type="text" name="TotalAssets"/></p>
+        <p style="text-align:center">属于微型企业：<input type="text" name="IsMicroEnterprise"/></p>
+
+
+        <input type="submit" value="注册" />
+
+          <p style="color: red;text-align: center">{{ error_name }}</p>
+
+</form>
+</body>
+</html>

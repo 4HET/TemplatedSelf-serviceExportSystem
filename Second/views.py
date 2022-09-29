@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -13,6 +15,7 @@ def second(request):
             # handle_upload_file(form.files['file'])
             return HttpResponse('upload success!')
     else:
+        print('hhh')
         form = UploadFileForm()
     return render(request, 'second.html', {'form': form})
 
@@ -33,6 +36,7 @@ def upload_detail(request):
     return render(request, 'second.html', {'form': form})
 
 def handle_upload_file(file):
-    with open("/tmp/%s" % file.name, 'wb+') as f:
+
+    with open("./tmp/%s" % file.name, 'wb+') as f:
         for chunk in file.chunks():
             f.write(chunk)
