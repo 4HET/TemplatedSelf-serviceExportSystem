@@ -19,7 +19,7 @@ def second(request):
     else:
         print('hhh')
         form = UploadFileForm()
-    return render(request, 'second.html', {'form': form})
+    return render(request, 'third.html', {'form': form})
     # if request.method == 'POST':
     #     form = FileFieldForm(request.POST, request.FILES)
     #     files = request.FILES.getlist('file_field')  # 获得多个文件上传进来的文件列表。
@@ -47,7 +47,50 @@ def upload_detail(request):
         form = UploadFileForm()
     return render(request, 'second.html', {'form': form})
 
-def handle_upload_file(file):
-    with open("./tmp/%s" % file.name, 'wb+') as f:
+def handle_upload_file(file, name):
+    with open("./tmp/%s" % name+'_'+file.name, 'wb+') as f:
         for chunk in file.chunks():
             f.write(chunk)
+
+def detail(request):
+    status = request.COOKIES.get('is_login')
+    if not status:
+        return redirect('/login/')
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_upload_file(request.FILES['file'], 'detail')
+            return render(request, 'second.html', {'form': form})
+    else:
+        print('hhh')
+        form = UploadFileForm()
+    return render(request, 'second.html', {'form': form})
+
+
+def deviate(request):
+    status = request.COOKIES.get('is_login')
+    if not status:
+        return redirect('/login/')
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_upload_file(request.FILES['file'], 'deviate')
+            return render(request, 'second.html', {'form': form})
+    else:
+        print('hhh')
+        form = UploadFileForm()
+    return render(request, 'second.html', {'form': form})
+
+def impl(request):
+    status = request.COOKIES.get('is_login')
+    if not status:
+        return redirect('/login/')
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_upload_file(request.FILES['file'], 'impl')
+            return render(request, 'second.html', {'form': form})
+    else:
+        print('hhh')
+        form = UploadFileForm()
+    return render(request, 'second.html', {'form': form})

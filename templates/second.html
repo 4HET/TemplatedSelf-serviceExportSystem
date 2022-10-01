@@ -13,7 +13,7 @@
 </head>
 <body>
 <h1>信息填写第二步</h1>
-<form action="" method="post" enctype="multipart/form-data">
+<form action="/detail/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 上传明细报价表
 {#        <form method="post" action="/detail/" enctype="multipart/form-data">#}
@@ -25,10 +25,19 @@
 </form>
 
     </br></br>
-技术偏离表{{ form }}<input type="button" value="上传">下载技术偏离表模板
-</br></br>
-项目实施方案{{ form }}<input type="button" value="上传">下载项目实施方案模板
-</br></br>
+<form action="/deviate/" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+技术偏离表{{ form }}<input type="submit" value="上传">下载技术偏离表模板
+</form>
+    </br></br>
+<form action="/impl/" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+项目实施方案{{ form }}<input type="submit" value="上传">下载项目实施方案模板
+</form>
+    </br></br>
+<form action="/second/" method="post">
+    {% csrf_token %}
 <input type="submit" style="background-color: #4472c4" value="下一步">
+</form>
 </body>
 </html>

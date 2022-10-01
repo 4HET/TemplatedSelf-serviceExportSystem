@@ -6,5 +6,7 @@ urlpatterns = [
     path('second/', views.second),
     path('sendPostSecond/', views.sendPostSecond),
     path('upload_detail/', views.upload_detail),
-    # path('detail/', views.detail),
+    path('detail/', views.detail),
+    path('deviate/', views.deviate),
+    path('impl/', views.impl),
 ]
