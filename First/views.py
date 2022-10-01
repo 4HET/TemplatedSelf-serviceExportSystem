@@ -11,6 +11,7 @@ def first(request):
     if request.method == 'POST':
         # 项目名称
         projectName = request.POST['projectName']
+        print(projectName)
         # 项目编号
         projectNumber = request.POST['projectNumber']
         # 采购人名称

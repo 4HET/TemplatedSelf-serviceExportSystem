@@ -96,6 +96,7 @@ def check_and_change(document, replace_dict):
             for key, value in replace_dict.items():
                 if key in para.runs[i].text:
                     print(str(key) + "->" + str(value))
+                    print(str(value))
                     para.runs[i].text = para.runs[i].text.replace(str(key), str(value))
     return document
 
