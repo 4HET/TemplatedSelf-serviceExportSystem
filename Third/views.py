@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.utils.encoding import escape_uri_path
 from docx import Document
 from Register.models import User
 import time
@@ -66,6 +67,22 @@ def responseFile(request):
     filename = r".\statics\user\{}responseFile.docx".format(username)
     document.save(filename)
 
+    def down_chunk_file_manager(file_path, chuck_size=1024):
+        with open(file_path, "rb") as file:
+            while True:
+                chuck_stream = file.read(chuck_size)
+                if chuck_stream:
+                    yield chuck_stream
+                else:
+                    break
+
+    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response['Content-Type'] = 'application/octet-stream'
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+
+
+    return response
+
     return render(request, 'third.html', {})
 
 
@@ -81,3 +98,9 @@ def check_and_change(document, replace_dict):
                     print(str(key) + "->" + str(value))
                     para.runs[i].text = para.runs[i].text.replace(str(key), str(value))
     return document
+
+def file_download(request):
+    # do something...
+    with open('file_name.txt') as f:
+        c = f.read()
+    return HttpResponse(c)
