@@ -9,4 +9,8 @@ urlpatterns = [
     path('detail/', views.detail),
     path('deviate/', views.deviate),
     path('impl/', views.impl),
+    path('downloadDetail/', views.downloadDetail),
+    path('downloadDevite/', views.downloadDevite),
+    path('downloadImpl/', views.downloadImpl),
+
 ]

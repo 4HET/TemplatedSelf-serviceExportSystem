@@ -1,7 +1,8 @@
 import os
 
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
+from django.utils.encoding import escape_uri_path
 
 from Second.forms import UploadFileForm, FileFieldForm
 
@@ -19,6 +20,7 @@ def second(request):
     else:
         print('hhh')
         form = UploadFileForm()
+        return render(request, 'second.html', {'form': form})
     return render(request, 'third.html', {'form': form})
     # if request.method == 'POST':
     #     form = FileFieldForm(request.POST, request.FILES)
@@ -94,3 +96,61 @@ def impl(request):
         print('hhh')
         form = UploadFileForm()
     return render(request, 'second.html', {'form': form})
+
+
+def downloadDetail(request):
+    filename = r".\statics\docx\detail.docx"
+
+    def down_chunk_file_manager(file_path, chuck_size=1024):
+        with open(file_path, "rb") as file:
+            while True:
+                chuck_stream = file.read(chuck_size)
+                if chuck_stream:
+                    yield chuck_stream
+                else:
+                    break
+
+    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response['Content-Type'] = 'application/octet-stream'
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+
+
+    return response
+
+def downloadDevite(request):
+    filename = r".\statics\docx\deviate.docx"
+
+    def down_chunk_file_manager(file_path, chuck_size=1024):
+        with open(file_path, "rb") as file:
+            while True:
+                chuck_stream = file.read(chuck_size)
+                if chuck_stream:
+                    yield chuck_stream
+                else:
+                    break
+
+    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response['Content-Type'] = 'application/octet-stream'
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+
+
+    return response
+
+def downloadImpl(request):
+    filename = r".\statics\docx\impl.docx"
+
+    def down_chunk_file_manager(file_path, chuck_size=1024):
+        with open(file_path, "rb") as file:
+            while True:
+                chuck_stream = file.read(chuck_size)
+                if chuck_stream:
+                    yield chuck_stream
+                else:
+                    break
+
+    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response['Content-Type'] = 'application/octet-stream'
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+
+
+    return response

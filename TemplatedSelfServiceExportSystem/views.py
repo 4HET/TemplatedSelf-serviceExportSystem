@@ -23,3 +23,9 @@ def login(request):
             return rep
     return render(request, 'login.html', {})
 
+def page_not_found(request, exception):
+    return redirect('/login/')
+    # return render(request, 'login.html', status=404)
+
+# def page_not_found_500(request, exception):
+#     return render(request, 'login.html', status=500)

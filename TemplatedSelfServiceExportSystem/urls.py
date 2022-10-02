@@ -18,11 +18,17 @@ from django.urls import path, include
 
 from . import views
 
+
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     path('login/', views.login),
     path('', include("First.urls")),
     path('', include("Second.urls")),
     path('', include("Third.urls")),
-    path('', include("Register.urls"))
+    path('', include("Register.urls")),
 ]
+
+handler404 = views.page_not_found
+# 500同理
+# handler500 = views.page_not_found_500
