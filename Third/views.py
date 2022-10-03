@@ -4,6 +4,8 @@ from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from docx import Document
+from docxcompose.composer import Composer
+
 from Register.models import User
 import time
 
@@ -67,6 +69,32 @@ def responseFile(request):
     filename = r".\statics\user\{}responseFile.docx".format(username)
     document.save(filename)
 
+    source_file_path_list = [filename]
+    document = Document(r".\statics\docx\temp_end.docx")
+
+
+    temp_end = r".\statics\user\{}_temp_end.docx".format(username)
+    document = check_and_change(document, replace_dict)
+    document.save(temp_end)
+
+
+    dt = request.COOKIES.get('detail')
+    dv = request.COOKIES.get('deviate')
+    ip = request.COOKIES.get('impl')
+    if dt is not None:
+        source_file_path_list.append(r".\tmp\{}".format(dt))
+    source_file_path_list.append(temp_end)
+    if dv is not None:
+        source_file_path_list.append(r".\tmp\{}".format(dv))
+    if ip is not None:
+        source_file_path_list.append(r".\tmp\{}".format(ip))
+
+
+
+    final_path = r".\tmp\{}_final.docx".format(username)
+    merge_doc(source_file_path_list, final_path)
+
+
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
             while True:
@@ -76,14 +104,12 @@ def responseFile(request):
                 else:
                     break
 
-    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response = StreamingHttpResponse(down_chunk_file_manager(final_path))
     response['Content-Type'] = 'application/octet-stream'
     response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
-
+    print(escape_uri_path(filename))
 
     return response
-
-    return render(request, 'third.html', {})
 
 
 def check_and_change(document, replace_dict):
@@ -100,8 +126,35 @@ def check_and_change(document, replace_dict):
                     para.runs[i].text = para.runs[i].text.replace(str(key), str(value))
     return document
 
+
 def file_download(request):
     # do something...
     with open('file_name.txt') as f:
         c = f.read()
     return HttpResponse(c)
+
+def merge_doc(source_file_path_list,target_file_path):
+    '''
+    合并多个docx文件
+    :param source_file_path_list: 源文件路径列表
+    :param target_file_path: 目标文件路径
+    :return:
+    '''
+    # 填充分页符号文档
+    page_break_doc = Document()
+    page_break_doc.add_page_break()
+    # 定义新文档
+    target_doc = Document(source_file_path_list[0])
+    target_composer = Composer(target_doc)
+    for i in range(len(source_file_path_list)):
+
+        # 跳过第一个作为模板的文件
+        if i==0:
+            continue
+        # 填充分页符文档
+        target_composer.append(page_break_doc)
+        # 拼接文档内容
+        f = source_file_path_list[i]
+        target_composer.append(Document(f))
+    # 保存目标文档
+    target_composer.save(target_file_path)

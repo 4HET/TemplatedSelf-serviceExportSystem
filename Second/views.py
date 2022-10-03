@@ -53,16 +53,20 @@ def handle_upload_file(file, name):
     with open("./tmp/%s" % name+'_'+file.name, 'wb+') as f:
         for chunk in file.chunks():
             f.write(chunk)
+    return name+'_'+file.name
 
 def detail(request):
     status = request.COOKIES.get('is_login')
+    username = request.COOKIES.get('username')
     if not status:
         return redirect('/login/')
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_upload_file(request.FILES['file'], 'detail')
-            return render(request, 'second.html', {'form': form})
+            rep = render(request, 'second.html', {'form': form})
+            dt = handle_upload_file(request.FILES['file'], username + '_detail')
+            rep.set_cookie('detail', dt)
+            return rep
     else:
         print('hhh')
         form = UploadFileForm()
@@ -71,13 +75,16 @@ def detail(request):
 
 def deviate(request):
     status = request.COOKIES.get('is_login')
+    username = request.COOKIES.get('username')
     if not status:
         return redirect('/login/')
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_upload_file(request.FILES['file'], 'deviate')
-            return render(request, 'second.html', {'form': form})
+            dv = handle_upload_file(request.FILES['file'], username + '_deviate')
+            rep = render(request, 'second.html', {'form': form})
+            rep.set_cookie('deviate', dv)
+            return rep
     else:
         print('hhh')
         form = UploadFileForm()
@@ -85,13 +92,16 @@ def deviate(request):
 
 def impl(request):
     status = request.COOKIES.get('is_login')
+    username = request.COOKIES.get('username')
     if not status:
         return redirect('/login/')
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_upload_file(request.FILES['file'], 'impl')
-            return render(request, 'second.html', {'form': form})
+            rep = render(request, 'second.html', {'form': form})
+            ip = handle_upload_file(request.FILES['file'], username + '_impl')
+            rep.set_cookie('impl', ip)
+            return rep
     else:
         print('hhh')
         form = UploadFileForm()

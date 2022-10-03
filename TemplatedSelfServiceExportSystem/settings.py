@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hj4(_if+k@rh=!pgy1gb@xo(*sb44x_jgzyh@va8x)9c!r+h3%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -76,6 +76,18 @@ WSGI_APPLICATION = 'TemplatedSelfServiceExportSystem.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+# DATABASES = {
+#     'default':
+#     {
+#         'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
+#         'NAME': 'auto_temp', # 数据库名称
+#         'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1
+#         'PORT': 3306, # 端口
+#         'USER': 'root',  # 数据库用户名
+#         'PASSWORD': '6050121', # 数据库密码
+#     }
+# }
 
 DATABASES = {
     'default': {
