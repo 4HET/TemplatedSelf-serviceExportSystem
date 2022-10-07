@@ -111,6 +111,72 @@ def responseFile(request):
 
     return response
 
+def zxqy(request):
+    username = request.COOKIES.get('username')
+    password = request.COOKIES.get('password')
+    list = User.objects.filter(username=username, password=password).first()
+
+    projectName = request.COOKIES.get('projectName')
+    projectNumber = request.COOKIES.get('projectNumber')
+    SupplierName = list.SupplierName
+    bossName = request.COOKIES.get('bossName')
+    phone = list.phone
+    address = list.address
+    email = list.email
+    sdk = list.SupplierDepositBank
+    sdan = list.SupplierCorporateAccountNumber
+    print(phone)
+
+    # 日期
+    year = datetime.now().year
+    month = datetime.now().month
+    day = datetime.now().day
+    document = Document(r".\statics\docx\zxqy.docx")
+    replace_dict = {
+        # 项目名称
+        "projectName": projectName,
+        # 项目编号
+        "projectNumber": projectNumber,
+        # 供应商名称
+        "SupplierName": SupplierName,
+        # 联系电话
+        "phone": phone,
+        # 联系地址
+        "address": address,
+        # 电子函件/邮箱
+        "email": email,
+        # 日期
+        "year": year,
+        "month": month,
+        "day": day,
+        # 采购人名称
+        "bossName": bossName,
+        # 供销商开户银行
+        "sdk": sdk,
+        # 账号
+        "sdan": sdan,
+    }
+
+    document = check_and_change(document, replace_dict)
+    filename = r".\tmp\{}_zxqy.docx".format(username)
+    document.save(filename)
+
+
+    def down_chunk_file_manager(file_path, chuck_size=1024):
+        with open(file_path, "rb") as file:
+            while True:
+                chuck_stream = file.read(chuck_size)
+                if chuck_stream:
+                    yield chuck_stream
+                else:
+                    break
+
+    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response['Content-Type'] = 'application/octet-stream'
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+    print(escape_uri_path(filename))
+
+    return response
 
 def check_and_change(document, replace_dict):
     """
