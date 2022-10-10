@@ -3,33 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>注册</title>
+
+    <script>
+        function checkTel() {
+            var tel = document.getElementById("tel");
+            var phone = tel.value;
+            var RegCellPhone = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+            var flag = phone.search(RegCellPhone);
+            if (flag === -1 && "" != phone) {
+                var inter = document.getElementById("telSpan")
+                inter.innerText = "手机号格式不正确"
+                return false;
+            } else {
+                var inter = document.getElementById("telSpan")
+                inter.innerText = ""
+                return true;
+            }
+        }
+
+        function check() {
+            var st = checkTel();
+            if (st === false)
+                return false
+        }
+    </script>
 </head>
 <body>
-    <h1>
-        <p style="text-align:center">新用户注册</p>
-    </h1>
-    <center>
+<h1>
+    <p style="text-align:center">新用户注册</p>
+</h1>
+<center>
     <form action="" method="post">
         {% csrf_token %}
-        <p style="text-align:center">用户名：<input type="text" name="username" /></p>
-        <p style="text-align:center">密码：<input type="password" name="password"/> </p>
-        <p style="text-align:center">供应商名称：<input type="text" name="SupplierName" /></p>
-        <p style="text-align:center">联系电话：<input type="text" name="phone"/> </p>
+        <p style="text-align:center">用户名：<input type="text" name="username"/></p>
+        <p style="text-align:center">密码：<input type="password" name="password"/></p>
+        <p style="text-align:center">供应商名称：<input type="text" name="SupplierName"/></p>
+        <p style="text-align:center">联系电话：<input id="tel" type="number" name="phone" onblur="checkTel(this.value)"/>
+        </p><span id="telSpan" style="color: red"></span>
         <p style="text-align:center">联系地址：<input type="text" name="address"/></p>
-        <p style="text-align:center">电子邮箱：<input type="text" name="email"/></p>
+        <p style="text-align:center">电子邮箱：<input type="email" name="email"/></p>
         <p style="text-align:center">供应商开户行：<input type="text" name="SupplierDepositBank"/></p>
-        <p style="text-align:center">供应商对公账号：<input type="text" name="SupplierCorporateAccountNumber"/></p>
-        <p style="text-align:center">企业从业人数：<input type="text" name="NumberOfEmployees"/></p>
-        <p style="text-align:center">每年营业收入：<input type="text" name="AnnualOperatingIncome"/></p>
-        <p style="text-align:center">资产总额：<input type="text" name="TotalAssets"/></p>
-        属于微型企业<p>是<input type="radio" name="IsMicroEnterprise" value="True">否<input type="radio" name="IsMicroEnterprise"  value="False"></p>
-{#        <p style="text-align:center">属于微型企业：<input type="text" name="IsMicroEnterprise"/></p>#}
+        <p style="text-align:center">供应商对公账号：<input type="number" name="SupplierCorporateAccountNumber"/></p>
+        <p style="text-align:center">企业从业人数：<input type="number" name="NumberOfEmployees"/></p>
+        <p style="text-align:center">每年营业收入：<input type="number" name="AnnualOperatingIncome"/></p>
+        <p style="text-align:center">资产总额：<input type="number" name="TotalAssets"/></p>
+        属于微型企业<p>是<input checked="true" type="radio" name="IsMicroEnterprise" value="True">否<input type="radio"
+                                                                                                           name="IsMicroEnterprise"
+                                                                                                           value="False">
+    </p>
+        {#        <p style="text-align:center">属于微型企业：<input type="text" name="IsMicroEnterprise"/></p>#}
 
 
-        <input type="submit" value="注册" />
+        <input type="submit" value="注册" onclick="check()"/>
 
-          <p style="color: red;text-align: center">{{ error_name }}</p>
+        <p style="color: red;text-align: center">{{ error_name }}</p>
 
-</form>
+    </form>
+</center>
 </body>
 </html>

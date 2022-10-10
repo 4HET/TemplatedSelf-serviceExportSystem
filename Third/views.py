@@ -1,11 +1,13 @@
 from datetime import datetime
 
+import docx
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from docx import Document
+from docx.shared import Cm
 from docxcompose.composer import Composer
-
+from docxtpl import DocxTemplate
 from Register.models import User
 import time
 
@@ -42,15 +44,15 @@ def responseFile(request):
     document = Document(r".\statics\docx\temp.docx")
     replace_dict = {
         # 项目名称
-        "projectName": projectName,
+        "purchaseDemandName": projectName,
         # 项目编号
-        "projectNumber": projectNumber,
+        "businessId": projectNumber,
         # 供应商名称
-        "SupplierName": SupplierName,
+        "UserName": SupplierName,
         # 联系电话
-        "phone": phone,
+        "personTel": phone,
         # 联系地址
-        "address": address,
+        "lxdz": address,
         # 电子函件/邮箱
         "email": email,
         # 日期
@@ -58,11 +60,11 @@ def responseFile(request):
         "month": month,
         "day": day,
         # 采购人名称
-        "bossName": bossName,
+        "purchasing": bossName,
         # 供销商开户银行
-        "sdk": sdk,
+        "qybank": sdk,
         # 账号
-        "sdan": sdan,
+        "qyzh": sdan,
     }
 
     document = check_and_change(document, replace_dict)
@@ -89,11 +91,10 @@ def responseFile(request):
     if ip is not None:
         source_file_path_list.append(r".\tmp\{}".format(ip))
 
-
-
     final_path = r".\tmp\{}_final.docx".format(username)
     merge_doc(source_file_path_list, final_path)
 
+    replace_picture(final_path, r".\statics\img\png4.png")
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -134,15 +135,15 @@ def zxqy(request):
     document = Document(r".\statics\docx\zxqy.docx")
     replace_dict = {
         # 项目名称
-        "projectName": projectName,
+        "purchaseDemandName": projectName,
         # 项目编号
-        "projectNumber": projectNumber,
+        "businessId": projectNumber,
         # 供应商名称
-        "SupplierName": SupplierName,
+        "UserName": SupplierName,
         # 联系电话
-        "phone": phone,
+        "personTel": phone,
         # 联系地址
-        "address": address,
+        "lxdz": address,
         # 电子函件/邮箱
         "email": email,
         # 日期
@@ -150,11 +151,11 @@ def zxqy(request):
         "month": month,
         "day": day,
         # 采购人名称
-        "bossName": bossName,
+        "purchasing": bossName,
         # 供销商开户银行
-        "sdk": sdk,
+        "qybank": sdk,
         # 账号
-        "sdan": sdan,
+        "qyzh": sdan,
     }
 
     document = check_and_change(document, replace_dict)
@@ -224,3 +225,14 @@ def merge_doc(source_file_path_list,target_file_path):
         target_composer.append(Document(f))
     # 保存目标文档
     target_composer.save(target_file_path)
+
+
+def replace_picture(final_path, replace_img_path):
+    tpl = DocxTemplate(final_path)
+    if tpl:
+        tpl.replace_pic("Picture 3", replace_img_path)
+        tpl.replace_pic("Picture 6", replace_img_path)
+        tpl.replace_pic("Picture 9", replace_img_path)
+        tpl.replace_pic("Picture 11", replace_img_path)
+        tpl.replace_pic("Picture 12", replace_img_path)
+    tpl.save(final_path)
