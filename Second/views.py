@@ -4,6 +4,7 @@ from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from Second.forms import UploadFileForm, FileFieldForm
+from Second.models import IMG
 
 
 # Create your views here.
@@ -106,6 +107,38 @@ def impl(request):
         form = UploadFileForm()
     return render(request, 'second.html', {'form': form})
 
+def officialSeal(request):
+    status = request.COOKIES.get('is_login')
+    username = request.COOKIES.get('username')
+    if not status:
+        return redirect('/login/')
+    img = IMG.objects.filter(username=username)
+    # if img.count() != 0:
+    #     return redirect('/showImg/')
+    if request.method == 'POST':
+        if img.count() != 0:
+            img = IMG.objects.get(username=username)
+            img.img = request.FILES.get('img')
+            img.name = request.FILES.get('img').name
+            img.img.name = username + '.png'
+            print(img.img.url)
+            img.save()
+        else:
+            img = request.FILES.get('img'),
+            img.name = username + '.png'
+            new_img = IMG(
+                img=img,
+                name=request.FILES.get('img').name,
+                # name=username+'.'+request.FILES.get('img').name.split('.')[1],
+                username=request.COOKIES.get('username')
+            )
+            new_img.save()
+        form = UploadFileForm()
+        # return HttpResponse("<p>数据添加成功！</p>")
+        return render(request, 'second.html', {'form': form})
+    else:
+        form = UploadFileForm()
+    return render(request, 'second.html', {'form': form})
 
 def downloadDetail(request):
     filename = r".\statics\docx\detail.docx"

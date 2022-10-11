@@ -94,7 +94,8 @@ def responseFile(request):
     final_path = r".\tmp\{}_final.docx".format(username)
     merge_doc(source_file_path_list, final_path)
 
-    replace_picture(final_path, r".\statics\img\png4.png")
+    rp = fr".\img\{username}.png"
+    replace_picture(final_path, rp)
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -236,3 +237,28 @@ def replace_picture(final_path, replace_img_path):
         tpl.replace_pic("Picture 11", replace_img_path)
         tpl.replace_pic("Picture 12", replace_img_path)
     tpl.save(final_path)
+
+# def img(request):
+#     username = request.COOKIES.get('username')
+#     img = IMG.objects.filter(username=username)
+#     if img.count() != 0:
+#         return redirect('/showImg/')
+#     if request.method == 'POST':
+#         if img.count() != 0:
+#             img = IMG.objects.get(username=username)
+#             img.img = request.FILES.get('img')
+#             img.name = request.FILES.get('img').name
+#             print(img.img.url)
+#             img.save()
+#         else:
+#             new_img = IMG(
+#                 img=request.FILES.get('img'),
+#                 name=request.FILES.get('img').name,
+#                 # name=username+'.'+request.FILES.get('img').name.split('.')[1],
+#                 username=request.COOKIES.get('username')
+#             )
+#             new_img.save()
+#
+#         # return HttpResponse("<p>数据添加成功！</p>")
+#         return render(request, 'showImg.html')
+#     return render(request, 'img.html')

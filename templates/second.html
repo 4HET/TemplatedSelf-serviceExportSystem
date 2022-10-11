@@ -1,43 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<br lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 
     <style>
-        input{
+        input {
             background-color: #ed7d31;
             color: azure;
         }
     </style>
 </head>
-<body>
+<br>
 <h1>信息填写第二步</h1>
 <form action="/detail/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-上传明细报价表
-{#        <form method="post" action="/detail/" enctype="multipart/form-data">#}
-{#        {% csrf_token %}#}
-        {{ form }}
-       <input type="submit" value="上传"/>
-{#    </form>#}
+    上传明细报价表
+    {#        <form method="post" action="/detail/" enctype="multipart/form-data">#}
+    {#        {% csrf_token %}#}
+    {{ form }}
+    <input type="submit" value="上传"/>
+    {#    </form>#}
     <a href="/downloadDetail/">下载明细表模板</a>
 </form>
 
-    </br></br>
+</br></br>
 <form action="/deviate/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     技术偏离表{{ form }}<input type="submit" value="上传"><a href="/downloadDevite/">下载技术偏离表模板</a>
 </form>
-    </br></br>
+</br></br>
 <form action="/impl/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     项目实施方案{{ form }}<input type="submit" value="上传"><a href="/downloadImpl/">下载项目实施方案模板</a>
 </form>
-    </br></br>
+</br></br>
+    <form action="/officialSeal/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        上传公章：<input type="file" name="img">
+        <input type="submit" value="上传">
+    </form>
+</br></br>
 <form action="/second/" method="post">
     {% csrf_token %}
-<input type="submit" style="background-color: #4472c4" value="下一步">
+    <input type="submit" style="background-color: #4472c4" value="下一步">
 </form>
 </body>
 </html>
