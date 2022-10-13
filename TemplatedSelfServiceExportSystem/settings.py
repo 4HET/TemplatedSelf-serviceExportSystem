@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'First',
     'Second',
     'Third',
-    'Register'
+    'Register',
+    'pdf',
 ]
 
 MIDDLEWARE = [
