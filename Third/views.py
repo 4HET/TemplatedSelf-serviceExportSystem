@@ -95,7 +95,8 @@ def responseFile(request):
     merge_doc(source_file_path_list, final_path)
 
     rp = fr"./img/{username}.png"
-    replace_picture(final_path, rp)
+    if not replace_picture(final_path, rp):
+        return render(request, 'second.html')
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -108,8 +109,11 @@ def responseFile(request):
 
     response = StreamingHttpResponse(down_chunk_file_manager(final_path))
     response['Content-Type'] = 'application/octet-stream'
-    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
-    print(escape_uri_path(filename))
+    the_file_name = "响应文件.docx"
+    # response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
+
+    print(escape_uri_path(the_file_name))
 
     return response
 
@@ -127,6 +131,11 @@ def zxqy(request):
     email = list.email
     sdk = list.SupplierDepositBank
     sdan = list.SupplierCorporateAccountNumber
+    zcze = list.TotalAssets
+    cyry = list.NumberOfEmployees
+    yysr = list.AnnualOperatingIncome
+    hangye = 'hhh'
+
     print(phone)
 
     # 日期
@@ -157,12 +166,27 @@ def zxqy(request):
         "qybank": sdk,
         # 账号
         "qyzh": sdan,
+        #日期
+        "bztime": "{}年{}月{}日".format(year, month, day),
+        #资产总额
+        "zcze": zcze,
+        #从业人员
+        "cyry": cyry,
+        #营业收入
+        "yysr": yysr,
+        #小型企业
+        "qylx": "小型企业",
+        #所属行业
+        "hangye": hangye,
     }
 
     document = check_and_change(document, replace_dict)
     filename = r"./tmp/{}_zxqy.docx".format(username)
     document.save(filename)
 
+    rp = fr"./img/{username}.png"
+    if not replace_zxqy(filename, rp):
+        return render(request, 'second.html')
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -175,8 +199,10 @@ def zxqy(request):
 
     response = StreamingHttpResponse(down_chunk_file_manager(filename))
     response['Content-Type'] = 'application/octet-stream'
-    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
-    print(escape_uri_path(filename))
+    the_file_path = "中小企业声明函.docx"
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_path))
+    # response["Content-Disposition"] = "attachment; filename={}".format("生成文件.docx")
+    print(escape_uri_path(the_file_path))
 
     return response
 
@@ -230,13 +256,27 @@ def merge_doc(source_file_path_list,target_file_path):
 
 def replace_picture(final_path, replace_img_path):
     tpl = DocxTemplate(final_path)
-    if tpl:
-        tpl.replace_pic("Picture 3", replace_img_path)
-        tpl.replace_pic("Picture 6", replace_img_path)
-        tpl.replace_pic("Picture 9", replace_img_path)
-        tpl.replace_pic("Picture 11", replace_img_path)
-        tpl.replace_pic("Picture 12", replace_img_path)
-    tpl.save(final_path)
+    try:
+        if tpl:
+            tpl.replace_pic("Picture 3", replace_img_path)
+            tpl.replace_pic("Picture 6", replace_img_path)
+            tpl.replace_pic("Picture 9", replace_img_path)
+            tpl.replace_pic("Picture 11", replace_img_path)
+            tpl.replace_pic("Picture 12", replace_img_path)
+        tpl.save(final_path)
+        return True
+    except:
+        return False
+
+def replace_zxqy(final_path, replace_img_path):
+    tpl = DocxTemplate(final_path)
+    try:
+        if tpl:
+            tpl.replace_pic("Picture 2", replace_img_path)
+        tpl.save(final_path)
+        return True
+    except:
+        return False
 
 # def img(request):
 #     username = request.COOKIES.get('username')

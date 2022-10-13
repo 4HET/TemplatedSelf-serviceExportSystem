@@ -163,7 +163,8 @@ def downloadDetail(request):
 
     response = StreamingHttpResponse(down_chunk_file_manager(filename))
     response['Content-Type'] = 'application/octet-stream'
-    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
+    the_file_name = "明细表模板.docx"
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
 
 
     return response
@@ -182,9 +183,8 @@ def downloadDevite(request):
 
     response = StreamingHttpResponse(down_chunk_file_manager(filename))
     response['Content-Type'] = 'application/octet-stream'
-    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
-
-
+    the_file_name = "技术偏离表模板.docx"
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
     return response
 
 def downloadImpl(request):
@@ -201,9 +201,8 @@ def downloadImpl(request):
 
     response = StreamingHttpResponse(down_chunk_file_manager(filename))
     response['Content-Type'] = 'application/octet-stream'
-    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(filename))
-
-
+    the_file_name = "项目实施方案模板.docx"
+    response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
     return response
 
 
