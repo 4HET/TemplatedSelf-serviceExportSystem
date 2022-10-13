@@ -125,14 +125,23 @@ def officialSeal(request):
             img.save()
         else:
             img = request.FILES.get('img'),
-            img.name = username + '.png'
+            name = request.FILES.get('img').name
+            print(img)
+
             new_img = IMG(
-                img=img,
+                img=request.FILES.get('img'),
+                # name=name,
                 name=request.FILES.get('img').name,
-                # name=username+'.'+request.FILES.get('img').name.split('.')[1],
                 username=request.COOKIES.get('username')
             )
             new_img.save()
+
+            img = IMG.objects.get(username=username)
+            img.img = request.FILES.get('img')
+            img.name = request.FILES.get('img').name
+            img.img.name = username + '.png'
+            print(img.img.url)
+            img.save()
         form = UploadFileForm()
         # return HttpResponse("<p>数据添加成功！</p>")
         return render(request, 'second.html', {'form': form})

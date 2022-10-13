@@ -41,7 +41,7 @@ def responseFile(request):
     year = datetime.now().year
     month = datetime.now().month
     day = datetime.now().day
-    document = Document(r".\statics\docx\temp.docx")
+    document = Document(r"./statics/docx/temp.docx")
     replace_dict = {
         # 项目名称
         "purchaseDemandName": projectName,
@@ -68,14 +68,14 @@ def responseFile(request):
     }
 
     document = check_and_change(document, replace_dict)
-    filename = r".\statics\user\{}responseFile.docx".format(username)
+    filename = r"./statics/user/{}responseFile.docx".format(username)
     document.save(filename)
 
     source_file_path_list = [filename]
-    document = Document(r".\statics\docx\temp_end.docx")
+    document = Document(r"./statics/docx/temp_end.docx")
 
 
-    temp_end = r".\statics\user\{}_temp_end.docx".format(username)
+    temp_end = r"./statics/user/{}_temp_end.docx".format(username)
     document = check_and_change(document, replace_dict)
     document.save(temp_end)
 
@@ -84,17 +84,17 @@ def responseFile(request):
     dv = request.COOKIES.get('deviate')
     ip = request.COOKIES.get('impl')
     if dt is not None:
-        source_file_path_list.append(r".\tmp\{}".format(dt))
+        source_file_path_list.append(r"./tmp/{}".format(dt))
     source_file_path_list.append(temp_end)
     if dv is not None:
-        source_file_path_list.append(r".\tmp\{}".format(dv))
+        source_file_path_list.append(r"./tmp/{}".format(dv))
     if ip is not None:
-        source_file_path_list.append(r".\tmp\{}".format(ip))
+        source_file_path_list.append(r"./tmp/{}".format(ip))
 
-    final_path = r".\tmp\{}_final.docx".format(username)
+    final_path = r"./tmp/{}_final.docx".format(username)
     merge_doc(source_file_path_list, final_path)
 
-    rp = fr".\img\{username}.png"
+    rp = fr"./img/{username}.png"
     replace_picture(final_path, rp)
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
@@ -133,7 +133,7 @@ def zxqy(request):
     year = datetime.now().year
     month = datetime.now().month
     day = datetime.now().day
-    document = Document(r".\statics\docx\zxqy.docx")
+    document = Document(r"./statics/docx/zxqy.docx")
     replace_dict = {
         # 项目名称
         "purchaseDemandName": projectName,
@@ -160,7 +160,7 @@ def zxqy(request):
     }
 
     document = check_and_change(document, replace_dict)
-    filename = r".\tmp\{}_zxqy.docx".format(username)
+    filename = r"./tmp/{}_zxqy.docx".format(username)
     document.save(filename)
 
 

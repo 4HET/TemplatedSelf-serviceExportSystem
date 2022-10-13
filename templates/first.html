@@ -3,26 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script>
+        function ToString(n) {
+            if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n)) {
+                return "数据非法";  //判断数据是否大于0
+            }
+
+            var unit = "千百拾亿千百拾万千百拾元角分", str = "";
+            n += "00";
+
+            var indexpoint = n.indexOf('.');  // 如果是小数，截取小数点前面的位数
+
+            if (indexpoint >= 0) {
+
+                n = n.substring(0, indexpoint) + n.substr(indexpoint + 1, 2);   // 若为小数，截取需要使用的unit单位
+            }
+
+            unit = unit.substr(unit.length - n.length);  // 若为整数，截取需要使用的unit单位
+            for (var i = 0; i < n.length; i++) {
+                str += "零壹贰叁肆伍陆柒捌玖".charAt(n.charAt(i)) + unit.charAt(i);  //遍历转化为大写的数字
+            }
+
+            var chi = str.replace(/零(千|百|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万|壹(拾)/g, "$1$2").replace(/^元零?|零分/g, "").replace(/元$/g, "元整"); // 替换掉数字里面的零字符，得到结果
+            var inter = document.getElementById("dxbj").value = chi
+            {#inter.value = inter#}
+            return str.replace(/零(千|百|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万|壹(拾)/g, "$1$2").replace(/^元零?|零分/g, "").replace(/元$/g, "元整"); // 替换掉数字里面的零字符，得到结果
+
+        }
+    </script>
 </head>
 <body>
 <div align="center">
-<h1>信息填写第一步</h1>
+    <h1>信息填写第一步</h1>
     <form action="" method="post">
         {% csrf_token %}
-<br/><br/>
-* 项目名称<input name="projectName">
-<br/><br/>
-* 项目编号<input name="projectNumber">
-<br/><br/>
-* 采购人名称<input name="bossName">
-<br/><br/>
-* 总报价<input name="pay" type="number" step="0.000000001">
-<br/><br/>
-* 大写报价<input name="wordPay">
-<br/><br/>
-* 服务器/工期<input name="time">
+        <br/><br/>
+        * 项目名称<input name="projectName">
+        <br/><br/>
+        * 项目编号<input name="projectNumber">
+        <br/><br/>
+        * 采购人名称<input name="bossName">
+        <br/><br/>
+        * 总报价<input name="pay" type="number" step="0.000000001" onblur="ToString(this.value)">
+        <br/><br/>
+        * 大写报价<input name="wordPay" id="dxbj">
+        <br/><br/>
+        * 服务器/工期<input name="time">
         <input type="submit" value="提交">
-        </form>
-    </div>
+    </form>
+</div>
 </body>
 </html>
