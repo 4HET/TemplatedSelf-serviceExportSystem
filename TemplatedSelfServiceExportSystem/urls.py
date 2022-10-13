@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include("Second.urls")),
     path('', include("Third.urls")),
     path('', include("Register.urls")),
+    path('', include("pdf.urls")),
 ]
 
 handler404 = views.page_not_found

@@ -277,28 +277,3 @@ def replace_zxqy(final_path, replace_img_path):
         return True
     except:
         return False
-
-# def img(request):
-#     username = request.COOKIES.get('username')
-#     img = IMG.objects.filter(username=username)
-#     if img.count() != 0:
-#         return redirect('/showImg/')
-#     if request.method == 'POST':
-#         if img.count() != 0:
-#             img = IMG.objects.get(username=username)
-#             img.img = request.FILES.get('img')
-#             img.name = request.FILES.get('img').name
-#             print(img.img.url)
-#             img.save()
-#         else:
-#             new_img = IMG(
-#                 img=request.FILES.get('img'),
-#                 name=request.FILES.get('img').name,
-#                 # name=username+'.'+request.FILES.get('img').name.split('.')[1],
-#                 username=request.COOKIES.get('username')
-#             )
-#             new_img.save()
-#
-#         # return HttpResponse("<p>数据添加成功！</p>")
-#         return render(request, 'showImg.html')
-#     return render(request, 'img.html')
