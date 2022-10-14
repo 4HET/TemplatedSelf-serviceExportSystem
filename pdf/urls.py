@@ -21,4 +21,7 @@ from . import views
 
 urlpatterns = [
     path('pdf/', views.pdf),
+    path('xywjpdf/', views.xywjpdf),
+    path('zxqypdf/', views.zxqypdf),
+
 ]
