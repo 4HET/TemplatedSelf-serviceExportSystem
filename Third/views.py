@@ -1,6 +1,7 @@
 import traceback
 from datetime import datetime
 
+import docxtpl
 import docx
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
@@ -10,6 +11,7 @@ from docx.shared import Cm
 from docxcompose.composer import Composer
 from docxtpl import DocxTemplate
 from Register.models import User
+from docx.shared import Mm
 import time
 
 
@@ -119,6 +121,9 @@ def responseFile(request):
                     yield chuck_stream
                 else:
                     break
+
+    if not add_f(username, final_path):
+        return render(request, 'second.html')
 
     response = StreamingHttpResponse(down_chunk_file_manager(final_path))
     response['Content-Type'] = 'application/octet-stream'
@@ -323,6 +328,39 @@ def replace_zxqy(final_path, replace_img_path):
         if tpl:
             tpl.replace_pic("Picture 2", replace_img_path)
         tpl.save(final_path)
+        return True
+    except Exception as e:
+        print(traceback.format_exc())
+        return False
+
+def add_f(username, docx_path):
+    try:
+        fzm = r"./img/{}_fzm.png".format(username)
+        fbm = r"./img/{}_fbm.png".format(username)
+        bzm = r"./img/{}_bzm.png".format(username)
+        bbm = r"./img/{}_bbm.png".format(username)
+
+        # 创建docx对象
+        daily_docx = docxtpl.DocxTemplate(docx_path)
+
+        # 创建2张图片对象
+        insert_image1 = docxtpl.InlineImage(daily_docx, fzm, width=Mm(140))
+        insert_image2 = docxtpl.InlineImage(daily_docx, fbm, width=Mm(140))
+        insert_image3 = docxtpl.InlineImage(daily_docx, bzm, width=Mm(140))
+        insert_image4 = docxtpl.InlineImage(daily_docx, bbm, width=Mm(140))
+
+        # 渲染内容
+        context = {
+            "fzm": insert_image1,
+            "fbm": insert_image2,
+            "bzm": insert_image3,
+            "bbm": insert_image4,
+        }
+
+        # 渲染docx
+        daily_docx.render(context)
+        # 保存docx
+        daily_docx.save(docx_path)
         return True
     except Exception as e:
         print(traceback.format_exc())

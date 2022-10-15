@@ -22,7 +22,24 @@ class SF(models.Model):
     name = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
 
-class Card(models.Model):
+class Bsqr(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+
+class Fzm(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+class Fbm(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+class Bzm(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+class Bbm(models.Model):
     img = models.ImageField(upload_to='img')
     name = models.CharField(max_length=200)
     username = models.CharField(max_length=200)

@@ -47,9 +47,34 @@
         <input type="submit" value="上传">
     </form>
 </br></br>
-    <form action="/sfCard/" method="post" enctype="multipart/form-data">
+    <form action="/bsqr/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        上传签名：<input type="file" name="img">
+        上传被授权人签名签名：<input type="file" name="img">
+        <input type="submit" value="上传">
+    </form>
+</br></br>
+
+    <form action="/fzm/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        上传法定代表人身份证正面：<input type="file" name="img">
+        <input type="submit" value="上传">
+    </form>
+</br></br>
+    <form action="/fbm/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        上传法定代表人身份证背面：<input type="file" name="img">
+        <input type="submit" value="上传">
+    </form>
+</br></br>
+    <form action="/bzm/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        上传被授权人身份证正面：<input type="file" name="img">
+        <input type="submit" value="上传">
+    </form>
+</br></br>
+    <form action="/bbm/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        上传被授权人身份证背面：<input type="file" name="img">
         <input type="submit" value="上传">
     </form>
 </br></br>
