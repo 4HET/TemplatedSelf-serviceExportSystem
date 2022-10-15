@@ -211,8 +211,8 @@ def sfCard(request):
             img.img = request.FILES.get('img')
             img.name = request.FILES.get('img').name
             img.img.name = username + '.png'
-            if os.path.exists("./img/"+username + '.png'):
-                os.remove("./img/"+username + '.png')
+            if os.path.exists("./img/"+username + '_card.png'):
+                os.remove("./img/"+username + '_card.png')
             print(img.img.url)
             img.save()
         else:
@@ -231,7 +231,7 @@ def sfCard(request):
             img = Card.objects.get(username=username)
             img.img = request.FILES.get('img')
             img.name = request.FILES.get('img').name
-            img.img.name = username + '.png'
+            img.img.name = username + '_card.png'
             print(img.img.url)
             img.save()
         form = UploadFileForm()

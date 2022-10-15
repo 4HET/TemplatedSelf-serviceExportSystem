@@ -36,6 +36,12 @@ def responseFile(request):
     email = list.email
     sdk = list.SupplierDepositBank
     sdan = list.SupplierCorporateAccountNumber
+    # 法定代表人名称
+    fddbrmc = request.COOKIES.get('fddbrmc')
+    # 被授权人姓名及身份证代码
+    xmjsfzdm = request.COOKIES.get('xmjsfzdm')
+    # 被授权人电话
+    bsqrdh = request.COOKIES.get('bsqrdh')
     print(phone)
 
     # 日期
@@ -66,6 +72,12 @@ def responseFile(request):
         "qybank": sdk,
         # 账号
         "qyzh": sdan,
+        # 法定代表人名称
+        'fddbrmc': fddbrmc,
+        # 被授权人姓名及身份证代码
+        'xmjsfzdm': xmjsfzdm,
+        # 被授权人电话
+        'bsqrdh': bsqrdh,
     }
 
     document = check_and_change(document, replace_dict)
@@ -290,6 +302,7 @@ def replace_picture(final_path, replace_img_path):
         return True
     except:
         return False
+
 
 def replace_sf(final_path, replace_img_path):
     tpl = DocxTemplate(final_path)

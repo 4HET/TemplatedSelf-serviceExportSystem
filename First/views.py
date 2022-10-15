@@ -22,6 +22,12 @@ def first(request):
         wordPay = request.POST['wordPay']
         # 服务期/工期
         time = request.POST['time']
+        # 法定代表人名称
+        fddbrmc = request.POST['fddbrmc']
+        # 被授权人姓名及身份证代码
+        xmjsfzdm = request.POST['xmjsfzdm']
+        # 被授权人电话
+        bsqrdh = request.POST['bsqrdh']
 
         rep = redirect('/second/')
         rep.set_cookie('projectName', projectName)
@@ -30,6 +36,9 @@ def first(request):
         rep.set_cookie('pay', pay)
         rep.set_cookie('wordPay', wordPay)
         rep.set_cookie('time', time)
+        rep.set_cookie('fddbrmc', fddbrmc)
+        rep.set_cookie('xmjsfzdm', xmjsfzdm)
+        rep.set_cookie('bsqrdh', bsqrdh)
         return rep
     return render(request, 'first.html', ctx)
 
