@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
 from Register import models
+from Second.models import IMG, Bsqr, SF, Fbm
 
 
 # Create your views here.
@@ -53,5 +54,70 @@ def register(request):
                                               IsMicroEnterprise=IsMicroEnterprise
                                               )
             user.save()
+
+            # 公章
+            new_img = IMG(
+                img=request.FILES.get('gz'),
+                # name=name,
+                name=request.FILES.get('gz').name,
+                username=username,
+            )
+            new_img.save()
+
+            img = IMG.objects.get(username=username)
+            img.img = request.FILES.get('gz')
+            img.name = request.FILES.get('gz').name
+            img.img.name = username + '.png'
+            print(img.img.url)
+            img.save()
+
+            # 签名
+            new_img = SF(
+                img=request.FILES.get('sf'),
+                name=request.FILES.get('sf').name,
+                username=username
+            )
+            new_img.save()
+
+            img = SF.objects.get(username=username)
+            img.img = request.FILES.get('sf')
+            img.name = request.FILES.get('sf').name
+            img.img.name = username + '_sf.png'
+            print(img.img.url)
+            print("not exists!")
+            img.save()
+
+            # 法定代表人身份证正面
+            new_img = Bsqr(
+                img=request.FILES.get('zm'),
+                # name=name,
+                name=request.FILES.get('zm').name,
+                username=username
+            )
+            new_img.save()
+
+            img = Bsqr.objects.get(username=username)
+            img.img = request.FILES.get('zm')
+            img.name = request.FILES.get('zm').name
+            img.img.name = username + '_fzm.png'
+            print(img.img.url)
+            img.save()
+
+            # 法定代表人身份证背面
+            new_img = Fbm(
+                img=request.FILES.get('bm'),
+                # name=name,
+                name=request.FILES.get('bm').name,
+                username=username
+            )
+            new_img.save()
+
+            img = Fbm.objects.get(username=username)
+            img.img = request.FILES.get('bm')
+            img.name = request.FILES.get('bm').name
+            img.img.name = username + '_fbm.png'
+            print(img.img.url)
+            img.save()
+
             return redirect('/login/')
     return render(request, 'register.html', {})

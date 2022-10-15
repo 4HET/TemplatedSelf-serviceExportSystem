@@ -345,7 +345,7 @@ def bzm(request):
             print(img.img.url)
             img.save()
         else:
-            img = request.FILES.get('img'),
+            img = request.FILES.get('img')
             name = request.FILES.get('img').name
             print(img)
 

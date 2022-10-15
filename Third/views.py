@@ -44,6 +44,9 @@ def responseFile(request):
     xmjsfzdm = request.COOKIES.get('xmjsfzdm')
     # 被授权人电话
     bsqrdh = request.COOKIES.get('bsqrdh')
+    pay = request.COOKIES.get('pay')
+    wordPay = request.COOKIES.get('wordPay')
+    tm = request.COOKIES.get('time')
     print(phone)
 
     # 日期
@@ -80,6 +83,9 @@ def responseFile(request):
         'xmjsfzdm': xmjsfzdm,
         # 被授权人电话
         'bsqrdh': bsqrdh,
+        'pay': pay,
+        'wordPay': wordPay,
+        'time': tm,
     }
 
     document = check_and_change(document, replace_dict)
@@ -105,12 +111,15 @@ def responseFile(request):
         source_file_path_list.append(r"./tmp/{}".format(ip))
     final_path = r"./tmp/{}_final.docx".format(username)
     merge_doc(source_file_path_list, final_path)
+    print(final_path)
 
     rp = fr"./img/{username}.png"
     if not replace_picture(final_path, rp):
+        print("=======picture========")
         return render(request, 'second.html')
 
     if not replace_sf(final_path, fr"./img/{username}_sf.png"):
+        print("=======sf========")
         return render(request, 'second.html')
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
@@ -122,8 +131,12 @@ def responseFile(request):
                 else:
                     break
 
-    if not add_f(username, final_path):
+    docx_path = r"./statics/docx/fj.docx"
+    target_path = r"./tmp/{}_fj.docx".format(username)
+    if not add_f(username, docx_path, target_path):
         return render(request, 'second.html')
+
+    merge_doc([final_path, target_path], final_path)
 
     response = StreamingHttpResponse(down_chunk_file_manager(final_path))
     response['Content-Type'] = 'application/octet-stream'
@@ -292,20 +305,22 @@ def replace_picture(final_path, replace_img_path):
             except:
                 print("6不存在")
             try:
-                tpl.replace_pic("Picture 9", replace_img_path)
+                # tpl.replace_pic("Picture 9", replace_img_path)
+                tpl.replace_pic("图片 9", replace_img_path)
             except:
                 print("9不存在")
             try:
-                tpl.replace_pic("Picture 11", replace_img_path)
+                tpl.replace_pic("图片 11", replace_img_path)
             except:
                 print("11不存在")
             try:
-                tpl.replace_pic("Picture 12", replace_img_path)
+                tpl.replace_pic("图片 12", replace_img_path)
             except:
                 print("12不存在")
         tpl.save(final_path)
         return True
-    except:
+    except Exception as e:
+        print(traceback.format_exc())
         return False
 
 
@@ -314,7 +329,7 @@ def replace_sf(final_path, replace_img_path):
     try:
         if tpl:
             tpl.replace_pic("Picture 1", replace_img_path)
-            tpl.replace_pic("Picture 5", replace_img_path)
+            tpl.replace_pic("图片 2", replace_img_path)
         tpl.save(final_path)
         return True
     except Exception as e:
@@ -333,7 +348,7 @@ def replace_zxqy(final_path, replace_img_path):
         print(traceback.format_exc())
         return False
 
-def add_f(username, docx_path):
+def add_f(username, docx_path, target_path):
     try:
         fzm = r"./img/{}_fzm.png".format(username)
         fbm = r"./img/{}_fbm.png".format(username)
@@ -360,7 +375,7 @@ def add_f(username, docx_path):
         # 渲染docx
         daily_docx.render(context)
         # 保存docx
-        daily_docx.save(docx_path)
+        daily_docx.save(target_path)
         return True
     except Exception as e:
         print(traceback.format_exc())

@@ -34,18 +34,18 @@
     {% csrf_token %}
     项目实施方案{{ form }}<input type="submit" value="上传"><a href="/downloadImpl/">下载项目实施方案模板</a>
 </form>
-</br></br>
-    <form action="/officialSeal/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        上传公章：<input type="file" name="img">
-        <input type="submit" value="上传">
-    </form>
-</br></br>
-    <form action="/sfSeal/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        上传签名：<input type="file" name="img">
-        <input type="submit" value="上传">
-    </form>
+{#</br></br>#}
+{#    <form action="/officialSeal/" method="post" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        上传公章：<input type="file" name="img">#}
+{#        <input type="submit" value="上传">#}
+{#    </form>#}
+{#</br></br>#}
+{#    <form action="/sfSeal/" method="post" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        上传签名：<input type="file" name="img">#}
+{#        <input type="submit" value="上传">#}
+{#    </form>#}
 </br></br>
     <form action="/bsqr/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -53,18 +53,18 @@
         <input type="submit" value="上传">
     </form>
 </br></br>
-
-    <form action="/fzm/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        上传法定代表人身份证正面：<input type="file" name="img">
-        <input type="submit" value="上传">
-    </form>
-</br></br>
-    <form action="/fbm/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        上传法定代表人身份证背面：<input type="file" name="img">
-        <input type="submit" value="上传">
-    </form>
+{##}
+{#    <form action="/fzm/" method="post" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        上传法定代表人身份证正面：<input type="file" name="img">#}
+{#        <input type="submit" value="上传">#}
+{#    </form>#}
+{#</br></br>#}
+{#    <form action="/fbm/" method="post" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        上传法定代表人身份证背面：<input type="file" name="img">#}
+{#        <input type="submit" value="上传">#}
+{#    </form>#}
 </br></br>
     <form action="/bzm/" method="post" enctype="multipart/form-data">
         {% csrf_token %}

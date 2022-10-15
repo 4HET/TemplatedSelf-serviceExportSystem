@@ -33,7 +33,7 @@
     <p style="text-align:center">新用户注册</p>
 </h1>
 <center>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <p style="text-align:center">用户名：<input type="text" name="username"/></p>
         <p style="text-align:center">密码：<input type="password" name="password"/></p>
@@ -47,7 +47,10 @@
         <p style="text-align:center">企业从业人数：<input type="number" name="NumberOfEmployees"/></p>
         <p style="text-align:center">每年营业收入：<input type="number" name="AnnualOperatingIncome"/></p>
         <p style="text-align:center">资产总额：<input type="number" name="TotalAssets"/></p>
-
+        <p style="text-align:center">上传公章:<input type="file" name="gz"></p>
+        <p style="text-align:center">上传签名:<input type="file" name="sf"></p>
+        <p style="text-align:center">上传法定代表人身份证正面:<input type="file" name="zm"></p>
+        <p style="text-align:center">上传法定代表人身份证背面：<input type="file" name="bm"></p>
         属于微型企业<p>是<input checked="true" type="radio" name="IsMicroEnterprise" value="True">否<input type="radio"
                                                                                                            name="IsMicroEnterprise"
                                                                                                            value="False">
