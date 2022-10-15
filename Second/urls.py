@@ -14,4 +14,5 @@ urlpatterns = [
     path('downloadImpl/', views.downloadImpl),
     path('officialSeal/', views.officialSeal),
     path('sfSeal/', views.sfSeal),
+    path('sfCard/', views.sfCard),
 ]

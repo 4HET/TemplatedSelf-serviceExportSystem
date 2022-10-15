@@ -21,3 +21,8 @@ class SF(models.Model):
     img = models.ImageField(upload_to='img')
     name = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
+
+class Card(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)

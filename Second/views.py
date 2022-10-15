@@ -4,7 +4,7 @@ from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from Second.forms import UploadFileForm, FileFieldForm
-from Second.models import IMG, SF
+from Second.models import IMG, SF, Card
 
 
 # Create your views here.
@@ -121,6 +121,8 @@ def officialSeal(request):
             img.img = request.FILES.get('img')
             img.name = request.FILES.get('img').name
             img.img.name = username + '.png'
+            if os.path.exists("./img/"+username + '.png'):
+                os.remove("./img/"+username + '.png')
             print(img.img.url)
             img.save()
         else:
@@ -163,6 +165,8 @@ def sfSeal(request):
             img.img = request.FILES.get('img')
             img.name = request.FILES.get('img').name
             img.img.name = username + '_sf.png'
+            if os.path.exists("./img/"+username + '_sf.png'):
+                os.remove("./img/"+username + '_sf.png')
             print(img.img.url)
             img.save()
         else:
@@ -181,6 +185,53 @@ def sfSeal(request):
             img.img = request.FILES.get('img')
             img.name = request.FILES.get('img').name
             img.img.name = username + '_sf.png'
+            if os.path.exists(username + '_sf.png'):
+                os.remove(username + '_sf.png')
+            print(img.img.url)
+            print("not exists!")
+            img.save()
+        form = UploadFileForm()
+        # return HttpResponse("<p>数据添加成功！</p>")
+        return render(request, 'second.html', {'form': form})
+    else:
+        form = UploadFileForm()
+    return render(request, 'second.html', {'form': form})
+
+def sfCard(request):
+    status = request.COOKIES.get('is_login')
+    username = request.COOKIES.get('username')
+    if not status:
+        return redirect('/login/')
+    img = Card.objects.filter(username=username)
+    # if img.count() != 0:
+    #     return redirect('/showImg/')
+    if request.method == 'POST':
+        if img.count() != 0:
+            img = Card.objects.get(username=username)
+            img.img = request.FILES.get('img')
+            img.name = request.FILES.get('img').name
+            img.img.name = username + '.png'
+            if os.path.exists("./img/"+username + '.png'):
+                os.remove("./img/"+username + '.png')
+            print(img.img.url)
+            img.save()
+        else:
+            img = request.FILES.get('img'),
+            name = request.FILES.get('img').name
+            print(img)
+
+            new_img = Card(
+                img=request.FILES.get('img'),
+                # name=name,
+                name=request.FILES.get('img').name,
+                username=request.COOKIES.get('username')
+            )
+            new_img.save()
+
+            img = Card.objects.get(username=username)
+            img.img = request.FILES.get('img')
+            img.name = request.FILES.get('img').name
+            img.img.name = username + '.png'
             print(img.img.url)
             img.save()
         form = UploadFileForm()

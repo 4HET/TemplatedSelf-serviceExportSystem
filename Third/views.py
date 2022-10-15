@@ -96,6 +96,9 @@ def responseFile(request):
     if not replace_picture(final_path, rp):
         return render(request, 'second.html')
 
+    if not replace_sf(final_path, fr"./img/{username}_sf.png"):
+        return render(request, 'second.html')
+
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
             while True:
@@ -286,6 +289,18 @@ def replace_picture(final_path, replace_img_path):
         tpl.save(final_path)
         return True
     except:
+        return False
+
+def replace_sf(final_path, replace_img_path):
+    tpl = DocxTemplate(final_path)
+    try:
+        if tpl:
+            tpl.replace_pic("Picture 1", replace_img_path)
+            tpl.replace_pic("Picture 5", replace_img_path)
+        tpl.save(final_path)
+        return True
+    except Exception as e:
+        print(traceback.format_exc())
         return False
 
 
