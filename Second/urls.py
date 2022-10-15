@@ -13,4 +13,5 @@ urlpatterns = [
     path('downloadDevite/', views.downloadDevite),
     path('downloadImpl/', views.downloadImpl),
     path('officialSeal/', views.officialSeal),
+    path('sfSeal/', views.sfSeal),
 ]

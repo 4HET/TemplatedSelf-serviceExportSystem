@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from docx2pdf import convert
 
-import pythoncom
+# import pythoncom
 
 
 # Create your views here.
@@ -26,7 +26,7 @@ def xywjpdf(request):
     if not status:
         return redirect('/login/')
     try:
-        pythoncom.CoInitialize()
+        # pythoncom.CoInitialize()
         xywj_path = r"./tmp/{}_final.docx".format(username)
         # xywj_path = r"./tmp/test.docx"
 
@@ -51,11 +51,11 @@ def zxqypdf(request):
     if not status:
         return redirect('/login/')
     try:
-        pythoncom.CoInitialize()
-        zxqy_path = r".\tmp\{}_zxqy.docx".format(username)
+        # pythoncom.CoInitialize()
+        zxqy_path = r"./tmp/{}_zxqy.docx".format(username)
 
         inputFile = zxqy_path
-        outputFile = r".\tmp\output\{}_zxqy.pdf".format(username)
+        outputFile = r"./tmp/output/{}_zxqy.pdf".format(username)
         file = open(outputFile, "w")
         file.close()
 

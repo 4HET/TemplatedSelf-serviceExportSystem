@@ -14,5 +14,10 @@ from django.db import models
 #     upload_time = models.DateTimeField(default=timezone.now())
 class IMG(models.Model):
     img = models.ImageField(upload_to='img')
-    name = models.CharField(max_length=20)
-    username = models.CharField(max_length=20)
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+
+class SF(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)

@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 
 import docx
@@ -74,11 +75,9 @@ def responseFile(request):
     source_file_path_list = [filename]
     document = Document(r"./statics/docx/temp_end.docx")
 
-
     temp_end = r"./statics/user/{}_temp_end.docx".format(username)
     document = check_and_change(document, replace_dict)
     document.save(temp_end)
-
 
     dt = request.COOKIES.get('detail')
     dv = request.COOKIES.get('deviate')
@@ -90,7 +89,6 @@ def responseFile(request):
         source_file_path_list.append(r"./tmp/{}".format(dv))
     if ip is not None:
         source_file_path_list.append(r"./tmp/{}".format(ip))
-
     final_path = r"./tmp/{}_final.docx".format(username)
     merge_doc(source_file_path_list, final_path)
 
@@ -117,6 +115,7 @@ def responseFile(request):
 
     return response
 
+
 def zxqy(request):
     username = request.COOKIES.get('username')
     password = request.COOKIES.get('password')
@@ -135,6 +134,8 @@ def zxqy(request):
     cyry = list.NumberOfEmployees
     yysr = list.AnnualOperatingIncome
     hangye = 'hhh'
+    pay = request.COOKIES.get('pay')
+    wordPay = request.COOKIES.get('wordPay')
 
     print(phone)
 
@@ -166,18 +167,20 @@ def zxqy(request):
         "qybank": sdk,
         # 账号
         "qyzh": sdan,
-        #日期
+        # 日期
         "bztime": "{}年{}月{}日".format(year, month, day),
-        #资产总额
+        # 资产总额
         "zcze": zcze,
-        #从业人员
+        # 从业人员
         "cyry": cyry,
-        #营业收入
+        # 营业收入
         "yysr": yysr,
-        #小型企业
+        # 小型企业
         "qylx": "小型企业",
-        #所属行业
+        # 所属行业
         "hangye": hangye,
+        'pay': pay,
+        'wordPay': wordPay,
     }
 
     document = check_and_change(document, replace_dict)
@@ -206,6 +209,7 @@ def zxqy(request):
 
     return response
 
+
 def check_and_change(document, replace_dict):
     """
     遍历word中的所有 paragraphs，在每一段中发现含有key 的内容，就替换为 value 。
@@ -227,7 +231,8 @@ def file_download(request):
         c = f.read()
     return HttpResponse(c)
 
-def merge_doc(source_file_path_list,target_file_path):
+
+def merge_doc(source_file_path_list, target_file_path):
     '''
     合并多个docx文件
     :param source_file_path_list: 源文件路径列表
@@ -243,7 +248,7 @@ def merge_doc(source_file_path_list,target_file_path):
     for i in range(len(source_file_path_list)):
 
         # 跳过第一个作为模板的文件
-        if i==0:
+        if i == 0:
             continue
         # 填充分页符文档
         target_composer.append(page_break_doc)
@@ -258,15 +263,31 @@ def replace_picture(final_path, replace_img_path):
     tpl = DocxTemplate(final_path)
     try:
         if tpl:
-            tpl.replace_pic("Picture 3", replace_img_path)
-            tpl.replace_pic("Picture 6", replace_img_path)
-            tpl.replace_pic("Picture 9", replace_img_path)
-            tpl.replace_pic("Picture 11", replace_img_path)
-            tpl.replace_pic("Picture 12", replace_img_path)
+            try:
+                tpl.replace_pic("Picture 3", replace_img_path)
+            except:
+                print("3不存在")
+            try:
+                tpl.replace_pic("Picture 6", replace_img_path)
+            except:
+                print("6不存在")
+            try:
+                tpl.replace_pic("Picture 9", replace_img_path)
+            except:
+                print("9不存在")
+            try:
+                tpl.replace_pic("Picture 11", replace_img_path)
+            except:
+                print("11不存在")
+            try:
+                tpl.replace_pic("Picture 12", replace_img_path)
+            except:
+                print("12不存在")
         tpl.save(final_path)
         return True
     except:
         return False
+
 
 def replace_zxqy(final_path, replace_img_path):
     tpl = DocxTemplate(final_path)
@@ -275,5 +296,6 @@ def replace_zxqy(final_path, replace_img_path):
             tpl.replace_pic("Picture 2", replace_img_path)
         tpl.save(final_path)
         return True
-    except:
+    except Exception as e:
+        print(traceback.format_exc())
         return False

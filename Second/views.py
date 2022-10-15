@@ -4,7 +4,7 @@ from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from Second.forms import UploadFileForm, FileFieldForm
-from Second.models import IMG
+from Second.models import IMG, SF
 
 
 # Create your views here.
@@ -149,8 +149,49 @@ def officialSeal(request):
         form = UploadFileForm()
     return render(request, 'second.html', {'form': form})
 
+def sfSeal(request):
+    status = request.COOKIES.get('is_login')
+    username = request.COOKIES.get('username')
+    if not status:
+        return redirect('/login/')
+    img = SF.objects.filter(username=username)
+    # if img.count() != 0:
+    #     return redirect('/showImg/')
+    if request.method == 'POST':
+        if img.count() != 0:
+            img = SF.objects.get(username=username)
+            img.img = request.FILES.get('img')
+            img.name = request.FILES.get('img').name
+            img.img.name = username + '_sf.png'
+            print(img.img.url)
+            img.save()
+        else:
+            img = request.FILES.get('img'),
+            name = request.FILES.get('img').name
+            print(img)
+
+            new_img = SF(
+                img=request.FILES.get('img'),
+                name=request.FILES.get('img').name,
+                username=request.COOKIES.get('username')
+            )
+            new_img.save()
+
+            img = SF.objects.get(username=username)
+            img.img = request.FILES.get('img')
+            img.name = request.FILES.get('img').name
+            img.img.name = username + '_sf.png'
+            print(img.img.url)
+            img.save()
+        form = UploadFileForm()
+        # return HttpResponse("<p>数据添加成功！</p>")
+        return render(request, 'second.html', {'form': form})
+    else:
+        form = UploadFileForm()
+    return render(request, 'second.html', {'form': form})
+
 def downloadDetail(request):
-    filename = r".\statics\docx\detail.docx"
+    filename = r"./statics/docx/detail.docx"
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -170,7 +211,7 @@ def downloadDetail(request):
     return response
 
 def downloadDevite(request):
-    filename = r".\statics\docx\deviate.docx"
+    filename = r"./statics/docx/deviate.docx"
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -188,7 +229,7 @@ def downloadDevite(request):
     return response
 
 def downloadImpl(request):
-    filename = r".\statics\docx\impl.docx"
+    filename = r"./statics/docx/impl.docx"
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:

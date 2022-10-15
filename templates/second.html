@@ -41,6 +41,12 @@
         <input type="submit" value="上传">
     </form>
 </br></br>
+    <form action="/sfSeal/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        上传公章：<input type="file" name="img">
+        <input type="submit" value="上传">
+    </form>
+</br></br>
 <form action="/second/" method="post">
     {% csrf_token %}
     <input type="submit" style="background-color: #4472c4" value="下一步">
