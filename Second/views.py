@@ -1,8 +1,11 @@
 import os
+import traceback
 
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
+from docxtpl import DocxTemplate
+
 from Second.forms import UploadFileForm, FileFieldForm
 from Second.models import IMG, SF, Bsqr
 
@@ -413,8 +416,67 @@ def bbm(request):
         form = UploadFileForm()
     return render(request, 'second.html', {'form': form})
 
+def solve_docx_detail(source_path, target_path, gongzhang, rq):
+    tpl = DocxTemplate(source_path)
+    if tpl:
+        try:
+            if os.path.exists(gongzhang):
+                tpl.replace_pic("图片 8", gongzhang)
+
+            context = {
+                "bzrq": rq,
+            }
+            tpl.render(context)
+            tpl.save(target_path)
+        except Exception as e:
+            print(traceback.format_exc())
+def solve_docx_deviate(source_path, target_path, gongzhang):
+    tpl = DocxTemplate(source_path)
+    if tpl:
+        try:
+            if os.path.exists(gongzhang):
+                tpl.replace_pic("Picture 14", gongzhang)
+
+
+            tpl.save(target_path)
+        except Exception as e:
+            print(traceback.format_exc())
+def solve_docx_impl(source_path, target_path, gongzhang):
+    tpl = DocxTemplate(source_path)
+    if tpl:
+        try:
+            if os.path.exists(gongzhang):
+                tpl.replace_pic("Picture 15", gongzhang)
+
+
+            tpl.save(target_path)
+        except Exception as e:
+            print(traceback.format_exc())
+
+def check_and_change(document, replace_dict):
+    """
+    遍历word中的所有 paragraphs，在每一段中发现含有key 的内容，就替换为 value 。
+   （key 和 value 都是replace_dict中的键值对。）
+    """
+    for para in document.paragraphs:
+        for i in range(len(para.runs)):
+            for key, value in replace_dict.items():
+                if key in para.runs[i].text:
+                    print(str(key) + "->" + str(value))
+                    print(str(value))
+                    para.runs[i].text = para.runs[i].text.replace(str(key), str(value))
+    return document
+
 def downloadDetail(request):
     filename = r"./statics/docx/detail.docx"
+    username = request.COOKIES.get('username')
+    gongzhang = r"./img/{}_gz.png".format(username)
+
+    rq = request.COOKIES.get('bzrq')
+
+    target_name = r"./tmp/{}.detail.docx".format(username)
+
+    solve_docx_detail(filename, target_name, gongzhang, rq)
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -425,7 +487,7 @@ def downloadDetail(request):
                 else:
                     break
 
-    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response = StreamingHttpResponse(down_chunk_file_manager(target_name))
     response['Content-Type'] = 'application/octet-stream'
     the_file_name = "明细表模板.docx"
     response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
@@ -435,6 +497,12 @@ def downloadDetail(request):
 
 def downloadDevite(request):
     filename = r"./statics/docx/deviate.docx"
+    username = request.COOKIES.get('username')
+    gongzhang = r"./img/{}_gz.png".format(username)
+
+    target_name = r"./tmp/{}.devite.docx".format(username)
+
+    solve_docx_deviate(filename, target_name, gongzhang)
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -445,7 +513,7 @@ def downloadDevite(request):
                 else:
                     break
 
-    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response = StreamingHttpResponse(down_chunk_file_manager(target_name))
     response['Content-Type'] = 'application/octet-stream'
     the_file_name = "技术偏离表模板.docx"
     response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
@@ -453,6 +521,12 @@ def downloadDevite(request):
 
 def downloadImpl(request):
     filename = r"./statics/docx/impl.docx"
+    username = request.COOKIES.get('username')
+    gongzhang = r"./img/{}_gz.png".format(username)
+
+    target_name = r"./tmp/{}.impl.docx".format(username)
+
+    solve_docx_impl(filename, target_name, gongzhang)
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -463,7 +537,7 @@ def downloadImpl(request):
                 else:
                     break
 
-    response = StreamingHttpResponse(down_chunk_file_manager(filename))
+    response = StreamingHttpResponse(down_chunk_file_manager(target_name))
     response['Content-Type'] = 'application/octet-stream'
     the_file_name = "项目实施方案模板.docx"
     response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))

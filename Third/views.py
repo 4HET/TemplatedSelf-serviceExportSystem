@@ -1,3 +1,4 @@
+import os
 import traceback
 from datetime import datetime
 
@@ -9,7 +10,7 @@ from django.utils.encoding import escape_uri_path
 from docx import Document
 from docx.shared import Cm
 from docxcompose.composer import Composer
-from docxtpl import DocxTemplate
+from docxtpl import DocxTemplate, InlineImage
 from Register.models import User
 from docx.shared import Mm
 import time
@@ -47,6 +48,21 @@ def responseFile(request):
     pay = request.COOKIES.get('pay')
     wordPay = request.COOKIES.get('wordPay')
     tm = request.COOKIES.get('time')
+    hangye = request.COOKIES.get('hy')
+    cyry = list.NumberOfEmployees
+    zcze = list.TotalAssets
+    bzrq = request.COOKIES.get('bzrq')
+
+    yysr = list.AnnualOperatingIncome
+    isxxqy = list.IsMicroEnterprise
+
+    gongzhang = r"./img/{}_gz.png".format(username)
+    qianming = r"./img/{}_sf.png".format(username)
+    beishouqvan = r"./img/{}_bsqr.png".format(username)
+    if isxxqy:
+        xxqy = "小型企业"
+    else:
+        xxqy = "大型企业"
     print(phone)
 
     # 日期
@@ -86,11 +102,22 @@ def responseFile(request):
         'pay': pay,
         'wordPay': wordPay,
         'time': tm,
-    }
+        'hangye': hangye,
+        'cyry': cyry,
+        'yysr': yysr,
+        # 小型企业
+        "qylx": xxqy,
+        # 日期
+        "bztime": "{}年{}月{}日".format(year, month, day),
+        # 资产总额
+        "zcze": zcze,
+        "bzrq": bzrq,
+     }
 
     document = check_and_change(document, replace_dict)
     filename = r"./statics/user/{}responseFile.docx".format(username)
     document.save(filename)
+    solve_docx1(filename, filename, gongzhang, qianming)
 
     source_file_path_list = [filename]
     document = Document(r"./statics/docx/temp_end.docx")
@@ -98,6 +125,14 @@ def responseFile(request):
     temp_end = r"./statics/user/{}_temp_end.docx".format(username)
     document = check_and_change(document, replace_dict)
     document.save(temp_end)
+
+    solve_docx_end(temp_end, temp_end, gongzhang, qianming, beishouqvan)
+
+    document = Document(r"./statics/docx/temp_zxqy.docx")
+
+    temp_zxqy = r"./statics/user/{}_temp_zxqy.docx".format(username)
+    document = check_and_change(document, replace_dict)
+    document.save(temp_zxqy)
 
     dt = request.COOKIES.get('detail')
     dv = request.COOKIES.get('deviate')
@@ -109,18 +144,10 @@ def responseFile(request):
         source_file_path_list.append(r"./tmp/{}".format(dv))
     if ip is not None:
         source_file_path_list.append(r"./tmp/{}".format(ip))
+    source_file_path_list.append(temp_zxqy)
     final_path = r"./tmp/{}_final.docx".format(username)
     merge_doc(source_file_path_list, final_path)
     print(final_path)
-
-    rp = fr"./img/{username}.png"
-    if not replace_picture(final_path, rp):
-        print("=======picture========")
-        return render(request, 'second.html')
-
-    if not replace_sf(final_path, fr"./img/{username}_sf.png"):
-        print("=======sf========")
-        return render(request, 'second.html')
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -131,12 +158,23 @@ def responseFile(request):
                 else:
                     break
 
+    dir_path = './img/username/'
+
+    fm = [final_path]
+    pic_list = get_img_file(dir_path)
     docx_path = r"./statics/docx/fj.docx"
     target_path = r"./tmp/{}_fj.docx".format(username)
+
+    if pic_list != []:
+        path_other = r"./tmp/{}_other.docx".format(username)
+        add_other(username, path_other)
+        fm.append(path_other)
+    fm.append(target_path)
+
     if not add_f(username, docx_path, target_path):
         return render(request, 'second.html')
 
-    merge_doc([final_path, target_path], final_path)
+    merge_doc(fm, final_path)
 
     response = StreamingHttpResponse(down_chunk_file_manager(final_path))
     response['Content-Type'] = 'application/octet-stream'
@@ -148,6 +186,39 @@ def responseFile(request):
 
     return response
 
+def solve_docx1(source_path, target_path, gongzhang, qianming):
+    tpl = DocxTemplate(source_path)
+    if tpl:
+        try:
+            if os.path.exists(gongzhang):
+                tpl.replace_pic("图片 6", gongzhang)
+                tpl.replace_pic("图片 2", gongzhang)
+
+            if os.path.exists(qianming):
+                tpl.replace_pic("图片 3", qianming)
+
+            tpl.save(target_path)
+        except Exception as e:
+            print(traceback.format_exc())
+
+def solve_docx_end(source_path, target_path, gongzhang, qianming, beishouqvan):
+    tpl = DocxTemplate(source_path)
+    if tpl:
+        try:
+            if os.path.exists(gongzhang):
+                tpl.replace_pic("图片 9", gongzhang)
+                tpl.replace_pic("图片 8", gongzhang)
+                tpl.replace_pic("图片 12", gongzhang)
+
+            if os.path.exists(qianming):
+                tpl.replace_pic("图片 4", qianming)
+
+            if os.path.exists(beishouqvan):
+                tpl.replace_pic("图片 2", qianming)
+
+            tpl.save(target_path)
+        except Exception as e:
+            print(traceback.format_exc())
 
 def zxqy(request):
     username = request.COOKIES.get('username')
@@ -166,7 +237,13 @@ def zxqy(request):
     zcze = list.TotalAssets
     cyry = list.NumberOfEmployees
     yysr = list.AnnualOperatingIncome
-    hangye = 'hhh'
+    isxxqy = list.IsMicroEnterprise
+    bzrq = request.COOKIES.get('bzrq')
+    if isxxqy:
+        xxqy = "小型企业"
+    else:
+        xxqy = "大型企业"
+    hangye = request.COOKIES.get('hy')
     pay = request.COOKIES.get('pay')
     wordPay = request.COOKIES.get('wordPay')
 
@@ -209,18 +286,19 @@ def zxqy(request):
         # 营业收入
         "yysr": yysr,
         # 小型企业
-        "qylx": "小型企业",
+        "qylx": xxqy,
         # 所属行业
         "hangye": hangye,
         'pay': pay,
         'wordPay': wordPay,
+        "bzrq": bzrq,
     }
 
     document = check_and_change(document, replace_dict)
     filename = r"./tmp/{}_zxqy.docx".format(username)
     document.save(filename)
 
-    rp = fr"./img/{username}.png"
+    rp = fr"./img/{username}_gz.png"
     if not replace_zxqy(filename, rp):
         return render(request, 'second.html')
 
@@ -328,7 +406,7 @@ def replace_sf(final_path, replace_img_path):
     tpl = DocxTemplate(final_path)
     try:
         if tpl:
-            tpl.replace_pic("Picture 1", replace_img_path)
+            # tpl.replace_pic("Picture 1", replace_img_path)
             tpl.replace_pic("图片 2", replace_img_path)
         tpl.save(final_path)
         return True
@@ -359,10 +437,25 @@ def add_f(username, docx_path, target_path):
         daily_docx = docxtpl.DocxTemplate(docx_path)
 
         # 创建2张图片对象
-        insert_image1 = docxtpl.InlineImage(daily_docx, fzm, width=Mm(140))
-        insert_image2 = docxtpl.InlineImage(daily_docx, fbm, width=Mm(140))
-        insert_image3 = docxtpl.InlineImage(daily_docx, bzm, width=Mm(140))
-        insert_image4 = docxtpl.InlineImage(daily_docx, bbm, width=Mm(140))
+        if os.path.exists(fzm):
+            insert_image1 = docxtpl.InlineImage(daily_docx, fzm, width=Mm(140))
+        else:
+            insert_image1 = ''
+
+        if os.path.exists(fbm):
+            insert_image2 = docxtpl.InlineImage(daily_docx, fbm, width=Mm(140))
+        else:
+            insert_image2 = ''
+
+        if os.path.exists(bzm):
+            insert_image3 = docxtpl.InlineImage(daily_docx, bzm, width=Mm(140))
+        else:
+            insert_image3 = ''
+
+        if os.path.exists(bbm):
+            insert_image4 = docxtpl.InlineImage(daily_docx, bbm, width=Mm(140))
+        else:
+            insert_image4 = ''
 
         # 渲染内容
         context = {
@@ -380,3 +473,28 @@ def add_f(username, docx_path, target_path):
     except Exception as e:
         print(traceback.format_exc())
         return False
+
+def get_img_file(file_name):
+    imagelist = []
+    for parent, dirnames, filenames in os.walk(file_name):
+        for filename in filenames:
+            if filename.lower().endswith(
+                    ('.bmp', '.dib', '.png', '.jpg', '.jpeg', '.pbm', '.pgm', '.ppm', '.tif', '.tiff')):
+                imagelist.append(os.path.join(parent, filename))
+        return imagelist
+def add_other(username, final_path):
+    tpl = DocxTemplate(r'./statics/docx/qita.docx')
+
+    dir_path = './img/username/'
+
+    pic_list = get_img_file(dir_path)
+    print(pic_list)
+    imgs = []
+
+    for i in pic_list:
+        imgs.append(InlineImage(tpl, i, height=Mm(100), width=Mm(100)))
+    context = {
+        'images': imgs
+    }
+    tpl.render(context)
+    tpl.save(final_path)

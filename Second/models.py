@@ -31,6 +31,7 @@ class Fzm(models.Model):
     img = models.ImageField(upload_to='img')
     name = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
+
 class Fbm(models.Model):
     img = models.ImageField(upload_to='img')
     name = models.CharField(max_length=200)
@@ -40,6 +41,16 @@ class Bzm(models.Model):
     name = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
 class Bbm(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+
+class Yyzz(models.Model):
+    img = models.ImageField(upload_to='img')
+    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+
+class GZ(models.Model):
     img = models.ImageField(upload_to='img')
     name = models.CharField(max_length=200)
     username = models.CharField(max_length=200)

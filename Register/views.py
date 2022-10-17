@@ -1,7 +1,9 @@
+import time
+
 from django.shortcuts import render, redirect
 
 from Register import models
-from Second.models import IMG, Bsqr, SF, Fbm
+from Second.models import IMG, Bsqr, SF, Fbm, Yyzz, GZ
 
 
 # Create your views here.
@@ -56,7 +58,7 @@ def register(request):
             user.save()
 
             # 公章
-            new_img = IMG(
+            new_img = GZ(
                 img=request.FILES.get('gz'),
                 # name=name,
                 name=request.FILES.get('gz').name,
@@ -64,10 +66,10 @@ def register(request):
             )
             new_img.save()
 
-            img = IMG.objects.get(username=username)
+            img = GZ.objects.get(username=username)
             img.img = request.FILES.get('gz')
             img.name = request.FILES.get('gz').name
-            img.img.name = username + '.png'
+            img.img.name = username + '_gz.png'
             print(img.img.url)
             img.save()
 
@@ -86,6 +88,7 @@ def register(request):
             print(img.img.url)
             print("not exists!")
             img.save()
+            # time.sleep(3)
 
             # 法定代表人身份证正面
             new_img = Bsqr(
@@ -116,6 +119,22 @@ def register(request):
             img.img = request.FILES.get('bm')
             img.name = request.FILES.get('bm').name
             img.img.name = username + '_fbm.png'
+            print(img.img.url)
+            img.save()
+
+            # 营业执照
+            new_img = Yyzz(
+                img=request.FILES.get('yyzz'),
+                # name=name,
+                name=request.FILES.get('yyzz').name,
+                username=username
+            )
+            new_img.save()
+
+            img = Yyzz.objects.get(username=username)
+            img.img = request.FILES.get('yyzz')
+            img.name = request.FILES.get('yyzz').name
+            img.img.name = username + '_yyzz.png'
             print(img.img.url)
             img.save()
 
