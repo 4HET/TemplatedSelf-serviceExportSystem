@@ -418,10 +418,12 @@ def bbm(request):
 
 def solve_docx_detail(source_path, target_path, gongzhang, rq):
     tpl = DocxTemplate(source_path)
+    touming = r"./img/touming.png"
     if tpl:
         try:
-            if os.path.exists(gongzhang):
-                tpl.replace_pic("图片 8", gongzhang)
+            if not os.path.exists(gongzhang):
+                gongzhang = touming
+            tpl.replace_pic("Picture 12", gongzhang)
 
             context = {
                 "bzrq": rq,
@@ -432,10 +434,12 @@ def solve_docx_detail(source_path, target_path, gongzhang, rq):
             print(traceback.format_exc())
 def solve_docx_deviate(source_path, target_path, gongzhang):
     tpl = DocxTemplate(source_path)
+    touming = r"./img/touming.png"
     if tpl:
         try:
-            if os.path.exists(gongzhang):
-                tpl.replace_pic("Picture 14", gongzhang)
+            if not os.path.exists(gongzhang):
+                gongzhang = touming
+            tpl.replace_pic("Picture 1", gongzhang)
 
 
             tpl.save(target_path)
@@ -443,10 +447,13 @@ def solve_docx_deviate(source_path, target_path, gongzhang):
             print(traceback.format_exc())
 def solve_docx_impl(source_path, target_path, gongzhang):
     tpl = DocxTemplate(source_path)
+    touming = r"./img/touming.png"
+
     if tpl:
         try:
-            if os.path.exists(gongzhang):
-                tpl.replace_pic("Picture 15", gongzhang)
+            if not os.path.exists(gongzhang):
+                gongzhang = touming
+            tpl.replace_pic("Picture 15", gongzhang)
 
 
             tpl.save(target_path)

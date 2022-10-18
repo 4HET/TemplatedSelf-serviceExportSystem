@@ -1,3 +1,4 @@
+# encoding:utf-8
 import os
 import traceback
 from datetime import datetime
@@ -49,9 +50,11 @@ def responseFile(request):
     wordPay = request.COOKIES.get('wordPay')
     tm = request.COOKIES.get('time')
     hangye = request.COOKIES.get('hy')
+    timemore = request.COOKIES.get('timemore')
     cyry = list.NumberOfEmployees
     zcze = list.TotalAssets
     bzrq = request.COOKIES.get('bzrq')
+
 
     yysr = list.AnnualOperatingIncome
     isxxqy = list.IsMicroEnterprise
@@ -69,6 +72,8 @@ def responseFile(request):
     year = datetime.now().year
     month = datetime.now().month
     day = datetime.now().day
+    if bzrq == "":
+        bzrq = "{}年{}月{}日".format(year, month, day)
     document = Document(r"./statics/docx/temp.docx")
     replace_dict = {
         # 项目名称
@@ -112,6 +117,7 @@ def responseFile(request):
         # 资产总额
         "zcze": zcze,
         "bzrq": bzrq,
+        "gq": timemore
      }
 
     document = check_and_change(document, replace_dict)
@@ -133,6 +139,8 @@ def responseFile(request):
     temp_zxqy = r"./statics/user/{}_temp_zxqy.docx".format(username)
     document = check_and_change(document, replace_dict)
     document.save(temp_zxqy)
+
+    solve_docx_zxqy(temp_zxqy, temp_zxqy, gongzhang)
 
     dt = request.COOKIES.get('detail')
     dv = request.COOKIES.get('deviate')
@@ -188,33 +196,57 @@ def responseFile(request):
 
 def solve_docx1(source_path, target_path, gongzhang, qianming):
     tpl = DocxTemplate(source_path)
+    touming = r"./img/touming.png"
     if tpl:
         try:
-            if os.path.exists(gongzhang):
-                tpl.replace_pic("图片 6", gongzhang)
-                tpl.replace_pic("图片 2", gongzhang)
+            if not os.path.exists(gongzhang):
+                gongzhang = touming
+            tpl.replace_pic("Picture 1", gongzhang)
+            # tpl.replace_pic("图片 6", gongzhang)
+            # tpl.replace_pic("图片 5", gongzhang)
+            # tpl.replace_pic("图片 2", gongzhang)
 
-            if os.path.exists(qianming):
-                tpl.replace_pic("图片 3", qianming)
-
+            if not os.path.exists(qianming):
+                qianming = touming
+            tpl.replace_pic("图片 3", qianming)
+            tpl.replace_pic("图片 2", qianming)
             tpl.save(target_path)
+
         except Exception as e:
+            print("=======================================")
             print(traceback.format_exc())
 
 def solve_docx_end(source_path, target_path, gongzhang, qianming, beishouqvan):
     tpl = DocxTemplate(source_path)
+    touming = r"./img/touming.png"
     if tpl:
         try:
-            if os.path.exists(gongzhang):
-                tpl.replace_pic("图片 9", gongzhang)
-                tpl.replace_pic("图片 8", gongzhang)
-                tpl.replace_pic("图片 12", gongzhang)
+            if not os.path.exists(gongzhang):
+                gongzhang = touming
+            tpl.replace_pic("Picture 1", gongzhang)
+            tpl.replace_pic("Picture 3", gongzhang)
+            tpl.replace_pic("Picture 4", gongzhang)
 
-            if os.path.exists(qianming):
-                tpl.replace_pic("图片 4", qianming)
+            if not os.path.exists(qianming):
+                qianming = touming
+            tpl.replace_pic("图片 8", qianming)
+            tpl.replace_pic("图片 4", qianming)
 
-            if os.path.exists(beishouqvan):
-                tpl.replace_pic("图片 2", qianming)
+            if not os.path.exists(beishouqvan):
+                beishouqvan = touming
+            tpl.replace_pic("图片 2", beishouqvan)
+
+            tpl.save(target_path)
+        except Exception as e:
+            print(traceback.format_exc())
+def solve_docx_zxqy(source_path, target_path, gongzhang):
+    tpl = DocxTemplate(source_path)
+    touming = r"./img/touming.png"
+    if tpl:
+        try:
+            if not os.path.exists(gongzhang):
+                gongzhang = touming
+            tpl.replace_pic("Picture 1", gongzhang)
 
             tpl.save(target_path)
         except Exception as e:
@@ -239,6 +271,12 @@ def zxqy(request):
     yysr = list.AnnualOperatingIncome
     isxxqy = list.IsMicroEnterprise
     bzrq = request.COOKIES.get('bzrq')
+    # 日期
+    year = datetime.now().year
+    month = datetime.now().month
+    day = datetime.now().day
+    if bzrq == "":
+        bzrq = "{}年{}月{}日".format(year, month, day)
     if isxxqy:
         xxqy = "小型企业"
     else:
@@ -253,6 +291,8 @@ def zxqy(request):
     year = datetime.now().year
     month = datetime.now().month
     day = datetime.now().day
+    if bzrq == "":
+        bzrq = "{}年{}月{}日".format(year, month, day)
     document = Document(r"./statics/docx/zxqy.docx")
     replace_dict = {
         # 项目名称
@@ -299,8 +339,9 @@ def zxqy(request):
     document.save(filename)
 
     rp = fr"./img/{username}_gz.png"
-    if not replace_zxqy(filename, rp):
-        return render(request, 'second.html')
+    solve_docx_zxqy(filename, filename, rp)
+    # if not replace_zxqy(filename, rp):
+    #     return render(request, 'second.html')
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -330,8 +371,8 @@ def check_and_change(document, replace_dict):
         for i in range(len(para.runs)):
             for key, value in replace_dict.items():
                 if key in para.runs[i].text:
-                    print(str(key) + "->" + str(value))
-                    print(str(value))
+                    # print(str(key) + "->" + str(value))
+                    # print(str(value))
                     para.runs[i].text = para.runs[i].text.replace(str(key), str(value))
     return document
 
@@ -343,31 +384,42 @@ def file_download(request):
     return HttpResponse(c)
 
 
-def merge_doc(source_file_path_list, target_file_path):
-    '''
-    合并多个docx文件
-    :param source_file_path_list: 源文件路径列表
-    :param target_file_path: 目标文件路径
-    :return:
-    '''
-    # 填充分页符号文档
-    page_break_doc = Document()
-    page_break_doc.add_page_break()
-    # 定义新文档
-    target_doc = Document(source_file_path_list[0])
-    target_composer = Composer(target_doc)
-    for i in range(len(source_file_path_list)):
+# def merge_doc(source_file_path_list, target_file_path):
+#     '''
+#     合并多个docx文件
+#     :param source_file_path_list: 源文件路径列表
+#     :param target_file_path: 目标文件路径
+#     :return:
+#     '''
+#     # 填充分页符号文档
+#     page_break_doc = Document()
+#     page_break_doc.add_page_break()
+#     # 定义新文档
+#     target_doc = Document(source_file_path_list[0])
+#     target_composer = Composer(target_doc)
+#     for i in range(len(source_file_path_list)):
+#
+#         # 跳过第一个作为模板的文件
+#         if i == 0:
+#             continue
+#         # 填充分页符文档
+#         target_composer.append(page_break_doc)
+#         # 拼接文档内容
+#         f = source_file_path_list[i]
+#         # =======================================
+#         target_composer.append(Document(f))
+#         # =======================================
+#     # 保存目标文档
+#     target_composer.save(target_file_path)
 
-        # 跳过第一个作为模板的文件
-        if i == 0:
-            continue
-        # 填充分页符文档
-        target_composer.append(page_break_doc)
-        # 拼接文档内容
-        f = source_file_path_list[i]
-        target_composer.append(Document(f))
-    # 保存目标文档
-    target_composer.save(target_file_path)
+def merge_doc(source_file_path_list, target_file_path):
+    new_document = Document()
+    composer = Composer(new_document)
+    page_break_doc = Document()
+    for fn in source_file_path_list:
+        composer.append(Document(fn))
+        composer.append(page_break_doc)
+    composer.save(target_file_path)
 
 
 def replace_picture(final_path, replace_img_path):
@@ -432,6 +484,7 @@ def add_f(username, docx_path, target_path):
         fbm = r"./img/{}_fbm.png".format(username)
         bzm = r"./img/{}_bzm.png".format(username)
         bbm = r"./img/{}_bbm.png".format(username)
+        yyzz = r"./img/{}_yyzz.png".format(username)
 
         # 创建docx对象
         daily_docx = docxtpl.DocxTemplate(docx_path)
@@ -457,12 +510,18 @@ def add_f(username, docx_path, target_path):
         else:
             insert_image4 = ''
 
+        if os.path.exists(yyzz):
+            insert_image5 = docxtpl.InlineImage(daily_docx, yyzz, width=Mm(140))
+        else:
+            insert_image5 = ''
+
         # 渲染内容
         context = {
             "fzm": insert_image1,
             "fbm": insert_image2,
             "bzm": insert_image3,
             "bbm": insert_image4,
+            "yyzz": insert_image5
         }
 
         # 渲染docx

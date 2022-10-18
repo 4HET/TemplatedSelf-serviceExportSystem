@@ -55,6 +55,8 @@ def xywjpdf(request):
         response["Content-Disposition"] = "attachment; filename*=UTF-8''{}".format(escape_uri_path(the_file_name))
 
         print("hhh")
+        return response
+
     except Exception as e:
         print(traceback.format_exc())
         return redirect('/third')
@@ -97,4 +99,4 @@ def zxqypdf(request):
     except Exception as e:
         print(traceback.format_exc())
         return redirect('/third')
-    return render(request, 'pdf.html', ctx)
+    # return render(request, 'pdf.html', ctx)
