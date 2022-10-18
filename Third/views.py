@@ -5,11 +5,14 @@ from datetime import datetime
 
 import docxtpl
 import docx
+import pythoncom
+from PyPDF2 import PdfFileMerger
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.encoding import escape_uri_path
 from docx import Document
 from docx.shared import Cm
+from docx2pdf import convert
 from docxcompose.composer import Composer
 from docxtpl import DocxTemplate, InlineImage
 from Register.models import User
@@ -25,8 +28,41 @@ def third(request):
         return redirect('/login/')
     return render(request, 'third.html', ctx)
 
+def docx_to_pdf(username, path_list):
+    pythoncom.CoInitialize()
+    for i in path_list:
+        # xywj_path = r"./tmp/{}_final.docx".format(username)
+        # xywj_path = r"./tmp/test.docx"
+
+        inputFile = i
+        # outputFile = r"./tmp/output/{}_xywj.pdf".format(username)
+        outputFile = inputFile.replace('.docx', '.pdf')
+        file = open(outputFile, "w")
+        file.close()
+
+        convert(inputFile, outputFile)
+
+
+def merge_pdf(pdf_lst, final_path):
+    target_path = os.getcwd() + r'/tmp/output/'
+    final_path = os.getcwd() + '/pdf/' + final_path
+    # pdf_lst = [f for f in os.listdir(target_path) if f.endswith('.pdf')]
+    pdf_lst = [os.path.join(target_path, filename.split('/')[-1]).replace('.docx', '.pdf') for filename in pdf_lst]
+
+    print(pdf_lst)
+    if os.path.exists(final_path):
+        os.remove(final_path)
+
+    file_merger = PdfFileMerger()
+    for pdf in pdf_lst:
+        file_merger.append(pdf)  # 合并pdf文件
+
+    file_merger.write(final_path)
+
 
 def responseFile(request):
+    pdf_list = []
+
     username = request.COOKIES.get('username')
     password = request.COOKIES.get('password')
     list = User.objects.filter(username=username, password=password).first()
@@ -121,14 +157,18 @@ def responseFile(request):
      }
 
     document = check_and_change(document, replace_dict)
-    filename = r"./statics/user/{}responseFile.docx".format(username)
+    filename = r"./tmp/output/{}responseFile.docx".format(username)
     document.save(filename)
     solve_docx1(filename, filename, gongzhang, qianming)
 
     source_file_path_list = [filename]
+
+    # 向pdf添加
+    pdf_list.append(filename)
+
     document = Document(r"./statics/docx/temp_end.docx")
 
-    temp_end = r"./statics/user/{}_temp_end.docx".format(username)
+    temp_end = r"./tmp/output/{}_temp_end.docx".format(username)
     document = check_and_change(document, replace_dict)
     document.save(temp_end)
 
@@ -136,7 +176,7 @@ def responseFile(request):
 
     document = Document(r"./statics/docx/temp_zxqy.docx")
 
-    temp_zxqy = r"./statics/user/{}_temp_zxqy.docx".format(username)
+    temp_zxqy = r"./tmp/output/{}_temp_zxqy.docx".format(username)
     document = check_and_change(document, replace_dict)
     document.save(temp_zxqy)
 
@@ -146,16 +186,29 @@ def responseFile(request):
     dv = request.COOKIES.get('deviate')
     ip = request.COOKIES.get('impl')
     if dt is not None:
-        source_file_path_list.append(r"./tmp/{}".format(dt))
+        source_file_path_list.append(r"./tmp/output/{}".format(dt))
+        # 向pdf添加
+        pdf_list.append(r"./tmp/output/{}".format(dt))
     source_file_path_list.append(temp_end)
+    pdf_list.append(temp_end)
     if dv is not None:
-        source_file_path_list.append(r"./tmp/{}".format(dv))
+        source_file_path_list.append(r"./tmp/output/{}".format(dv))
+        pdf_list.append(r"./tmp/output/{}".format(dv))
     if ip is not None:
-        source_file_path_list.append(r"./tmp/{}".format(ip))
+        source_file_path_list.append(r"./tmp/output/{}".format(ip))
+        pdf_list.append(r"./tmp/output/{}".format(ip))
     source_file_path_list.append(temp_zxqy)
-    final_path = r"./tmp/{}_final.docx".format(username)
+    pdf_list.append(temp_zxqy)
+    final_path = r"./tmp/output/{}_final.docx".format(username)
+
     merge_doc(source_file_path_list, final_path)
     print(final_path)
+
+    # ============================================
+    # pdf_path = '{}_xywj.pdf'.format(username)
+    # docx_to_pdf(username, source_file_path_list)
+    # merge_pdf(source_file_path_list, pdf_path)
+    # ============================================
 
     def down_chunk_file_manager(file_path, chuck_size=1024):
         with open(file_path, "rb") as file:
@@ -171,18 +224,29 @@ def responseFile(request):
     fm = [final_path]
     pic_list = get_img_file(dir_path)
     docx_path = r"./statics/docx/fj.docx"
-    target_path = r"./tmp/{}_fj.docx".format(username)
+    target_path = r"./tmp/output/{}_fj.docx".format(username)
 
     if pic_list != []:
-        path_other = r"./tmp/{}_other.docx".format(username)
+        path_other = r"./tmp/output/{}_other.docx".format(username)
         add_other(username, path_other)
         fm.append(path_other)
+        pdf_list.append(path_other)
     fm.append(target_path)
+    pdf_list.append(target_path)
 
     if not add_f(username, docx_path, target_path):
         return render(request, 'second.html')
 
     merge_doc(fm, final_path)
+    print(fm)
+
+    # =============================================
+    pdf_path = '{}_xywj.pdf'.format(username)
+    docx_to_pdf(username, pdf_list)
+    merge_pdf(pdf_list, pdf_path)
+    print(pdf_list)
+    # =============================================
+
 
     response = StreamingHttpResponse(down_chunk_file_manager(final_path))
     response['Content-Type'] = 'application/octet-stream'
@@ -384,42 +448,42 @@ def file_download(request):
     return HttpResponse(c)
 
 
-# def merge_doc(source_file_path_list, target_file_path):
-#     '''
-#     合并多个docx文件
-#     :param source_file_path_list: 源文件路径列表
-#     :param target_file_path: 目标文件路径
-#     :return:
-#     '''
-#     # 填充分页符号文档
-#     page_break_doc = Document()
-#     page_break_doc.add_page_break()
-#     # 定义新文档
-#     target_doc = Document(source_file_path_list[0])
-#     target_composer = Composer(target_doc)
-#     for i in range(len(source_file_path_list)):
-#
-#         # 跳过第一个作为模板的文件
-#         if i == 0:
-#             continue
-#         # 填充分页符文档
-#         target_composer.append(page_break_doc)
-#         # 拼接文档内容
-#         f = source_file_path_list[i]
-#         # =======================================
-#         target_composer.append(Document(f))
-#         # =======================================
-#     # 保存目标文档
-#     target_composer.save(target_file_path)
-
 def merge_doc(source_file_path_list, target_file_path):
-    new_document = Document()
-    composer = Composer(new_document)
+    '''
+    合并多个docx文件
+    :param source_file_path_list: 源文件路径列表
+    :param target_file_path: 目标文件路径
+    :return:
+    '''
+    # 填充分页符号文档
     page_break_doc = Document()
-    for fn in source_file_path_list:
-        composer.append(Document(fn))
-        composer.append(page_break_doc)
-    composer.save(target_file_path)
+    page_break_doc.add_page_break()
+    # 定义新文档
+    target_doc = Document(source_file_path_list[0])
+    target_composer = Composer(target_doc)
+    for i in range(len(source_file_path_list)):
+
+        # 跳过第一个作为模板的文件
+        if i == 0:
+            continue
+        # 填充分页符文档
+        target_composer.append(page_break_doc)
+        # 拼接文档内容
+        f = source_file_path_list[i]
+        # =======================================
+        target_composer.append(Document(f))
+        # =======================================
+    # 保存目标文档
+    target_composer.save(target_file_path)
+
+# def merge_doc(source_file_path_list, target_file_path):
+#     new_document = Document()
+#     composer = Composer(new_document)
+#     page_break_doc = Document()
+#     for fn in source_file_path_list:
+#         composer.append(Document(fn))
+#         composer.append(page_break_doc)
+#     composer.save(target_file_path)
 
 
 def replace_picture(final_path, replace_img_path):

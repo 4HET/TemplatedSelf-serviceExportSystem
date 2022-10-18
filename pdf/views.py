@@ -1,3 +1,4 @@
+import os
 import time
 import traceback
 
@@ -32,12 +33,14 @@ def xywjpdf(request):
         # xywj_path = r"./tmp/test.docx"
 
 
-        inputFile = xywj_path
-        outputFile = r"./tmp/output/{}_xywj.pdf".format(username)
-        file = open(outputFile, "w")
-        file.close()
+        # inputFile = xywj_path
+        final_path = '{}_xywj.pdf'.format(username)
+        outputFile = os.getcwd() + '/pdf/' + final_path
+        # outputFile = r"./tmp/output/{}_xywj.pdf".format(username)
+        # file = open(outputFile, "w")
+        # file.close()
 
-        convert(inputFile, outputFile)
+        # convert(inputFile, outputFile)
         # pythoncom.CoUninitialize()
         def down_chunk_file_manager(file_path, chuck_size=1024):
             with open(file_path, "rb") as file:
