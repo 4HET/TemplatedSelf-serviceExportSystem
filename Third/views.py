@@ -544,6 +544,9 @@ def replace_zxqy(final_path, replace_img_path):
 
 def add_f(username, docx_path, target_path):
     try:
+        fr = "法人身份证"
+        bsqr = "被授权人身份证"
+        py = "企业营业执照"
         fzm = r"./img/{}_fzm.png".format(username)
         fbm = r"./img/{}_fbm.png".format(username)
         bzm = r"./img/{}_bzm.png".format(username)
@@ -553,7 +556,12 @@ def add_f(username, docx_path, target_path):
         # 创建docx对象
         daily_docx = docxtpl.DocxTemplate(docx_path)
 
-        # 创建2张图片对象
+        if not (os.path.exists(fzm) or os.path.exists(fbm)):
+            fr = ''
+
+        if not (os.path.exists(bzm) or os.path.exists(bzm)):
+            bsqr = ''
+
         if os.path.exists(fzm):
             insert_image1 = docxtpl.InlineImage(daily_docx, fzm, width=Mm(140))
         else:
@@ -578,6 +586,7 @@ def add_f(username, docx_path, target_path):
             insert_image5 = docxtpl.InlineImage(daily_docx, yyzz, width=Mm(140))
         else:
             insert_image5 = ''
+            py = ''
 
         # 渲染内容
         context = {
@@ -585,7 +594,10 @@ def add_f(username, docx_path, target_path):
             "fbm": insert_image2,
             "bzm": insert_image3,
             "bbm": insert_image4,
-            "yyzz": insert_image5
+            "yyzz": insert_image5,
+            'fr': fr,
+            'py': py,
+            'bsqr': bsqr
         }
 
         # 渲染docx

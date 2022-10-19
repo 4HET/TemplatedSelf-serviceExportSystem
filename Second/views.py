@@ -53,7 +53,7 @@ def upload_detail(request):
     return render(request, 'second.html', {'form': form})
 
 def handle_upload_file(file, name):
-    with open("./tmp/%s" % name+'_'+file.name, 'wb+') as f:
+    with open("./tmp/output/%s" % name+'_'+file.name, 'wb+') as f:
         for chunk in file.chunks():
             f.write(chunk)
     return name+'_'+file.name
@@ -453,7 +453,7 @@ def solve_docx_impl(source_path, target_path, gongzhang):
         try:
             if not os.path.exists(gongzhang):
                 gongzhang = touming
-            tpl.replace_pic("Picture 15", gongzhang)
+            tpl.replace_pic("Picture 1", gongzhang)
 
 
             tpl.save(target_path)
